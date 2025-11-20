@@ -9,6 +9,7 @@ class CommonImageView extends StatelessWidget {
   String? url;
   String? imagePath;
   String? svgPath;
+  String? svgNetwork;
   File? file;
   double? height;
   double? width;
@@ -16,11 +17,14 @@ class CommonImageView extends StatelessWidget {
   final BoxFit fit;
   final String placeHolder;
   final Color? imageColor;
+  final Color? svgNetworkColor;
 
   CommonImageView({
     this.url,
     this.imagePath,
     this.svgPath,
+    this.svgNetworkColor,
+    this.svgNetwork,
     this.file,
     this.height,
     this.width,
@@ -47,6 +51,23 @@ class CommonImageView extends StatelessWidget {
             height: height,
             width: width,
             fit: fit,
+          ),
+        ),
+      );
+    }
+
+    if (svgNetwork != null && svgNetwork!.isNotEmpty) {
+      return Container(
+        height: height,
+        width: width,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius!),
+          child: SvgPicture.network(
+            svgNetwork!,
+            height: height,
+            width: width,
+            fit: fit,
+            color: svgNetworkColor,
           ),
         ),
       );

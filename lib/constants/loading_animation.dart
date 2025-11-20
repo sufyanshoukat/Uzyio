@@ -91,7 +91,7 @@ class WaveLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoadingAnimationWidget.staggeredDotsWave(
-      color: kSecondaryColor,
+      color: kWhiteColor,
       size: size,
     );
   }

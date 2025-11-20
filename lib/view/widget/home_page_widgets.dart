@@ -46,10 +46,10 @@ class CategorieButton extends StatelessWidget {
             child: Row(
               children: [
                 CommonImageView(
-                  imagePath: icon,
+                  svgNetwork: icon,
                   height: 20,
                   width: 20,
-                  imageColor: (isSeleted) ? kBlackColor : kWhiteColor,
+                  svgNetworkColor: (isSeleted) ? kBlackColor : kWhiteColor,
                 ),
                 SizedBox(width: 10),
                 MyText(
@@ -81,10 +81,10 @@ class CategorieButton extends StatelessWidget {
             child: Row(
               children: [
                 CommonImageView(
-                  imagePath: icon,
+                  svgNetwork: icon,
                   height: 20,
                   width: 20,
-                  imageColor: (isSeleted) ? kWhiteColor : kBlackColor,
+                  svgNetworkColor: (isSeleted) ? kWhiteColor : kBlackColor,
                 ),
                 SizedBox(width: 10),
                 MyText(
@@ -102,29 +102,32 @@ class CategorieButton extends StatelessWidget {
 }
 
 class AiImageCard extends StatelessWidget {
-  final String profileImage, aiImage, profileName;
+  final String aiImageURL, profileName;
+  final String? profileImage;
   final double width, height;
+  final bool isProCard;
+  final VoidCallback? onTap;
   const AiImageCard({
     super.key,
-    required this.profileImage,
-    required this.aiImage,
+    this.profileImage,
+    required this.aiImageURL,
     required this.profileName,
     this.width = 140,
     this.height = 247,
+    this.isProCard = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Get.to(() => ViewPublicContent());
-      },
+      onTap: onTap,
       child: Stack(
         children: [
           CommonImageView(
             height: height,
             width: width,
-            imagePath: aiImage,
+            url: aiImageURL,
             radius: 10,
             fit: BoxFit.cover,
           ),
@@ -147,14 +150,14 @@ class AiImageCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ProCard(),
+                  Visibility(visible: isProCard, child: ProCard()),
                   Spacer(),
-                  CommonImageView(
-                    height: 42,
-                    width: 42,
-                    imagePath: profileImage,
-                    radius: 100,
-                  ),
+                  // CommonImageView(
+                  //   height: 42,
+                  //   width: 42,
+                  //   imagePath: profileImage,
+                  //   radius: 100,
+                  // ),
                   MyText(
                     paddingTop: 8,
                     text: profileName,

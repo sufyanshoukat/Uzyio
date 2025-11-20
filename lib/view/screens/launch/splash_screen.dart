@@ -85,8 +85,6 @@ import 'package:uzyio/constants/app_videos.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:uzyio/constants/app_images.dart';
-import 'package:uzyio/constants/app_colors.dart';
-import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/view/screens/auth/login.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 

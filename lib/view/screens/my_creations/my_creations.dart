@@ -80,7 +80,7 @@ class _MyCreationPageState extends State<MyCreationPage> {
                             (index.isEven)
                                 ? Assets.imagesAiGril1
                                 : Assets.imagesAiGril2,
-                        aiImage:
+                        aiImageURL:
                             (index.isEven)
                                 ? Assets.imagesAiBoy1
                                 : Assets.imagesAiBoy2,
