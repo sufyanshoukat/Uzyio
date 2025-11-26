@@ -82,6 +82,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uzyio/constants/app_videos.dart';
+import 'package:uzyio/controller/auth_controller/auth_controller.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:uzyio/constants/app_images.dart';
@@ -95,6 +96,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late VideoPlayerController _controller;
+  AuthController auth = Get.put(AuthController());
 
   @override
   void initState() {
@@ -110,7 +112,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     /// Navigate to Next Screen after 6 sec
     Future.delayed(Duration(seconds: 6), () {
-      Get.to(() => LoginPage());
+      // Get.to(() => LoginPage());
+
+      auth.checkLoginStatus();
     });
   }
 

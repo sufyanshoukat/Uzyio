@@ -5,7 +5,7 @@ import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
-import 'package:uzyio/view/screens/generate_content/generated_content_viewer.dart';
+import 'package:uzyio/view/screens/generate_content/generated_style.dart';
 import 'package:uzyio/view/widget/custom_textfield.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/my_button.dart';
@@ -65,7 +65,7 @@ class _TextToVideoPageState extends State<TextToVideoPage> {
                 mTop: 32,
                 mBottom: 18,
                 onTap: () {
-                  Get.to(() => GeneratedContentViewerPage());
+                  Get.to(() => GeneratedStylePageDummyPage());
                 },
                 isGradientBackground: true,
                 buttonText: "Generate Video",

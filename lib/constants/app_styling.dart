@@ -62,10 +62,12 @@ class AppStyling {
   BoxDecoration bottomSheetStyle({
     Color color = kSecondaryColor,
     double topRadius = 30,
+    bool isTopBorder = true,
   }) {
     return BoxDecoration(
       color: color,
       borderRadius: BorderRadius.vertical(top: Radius.circular(topRadius)),
+      // border: Border(top: BorderSide(color: kWhiteColor, width: 1)),
     );
   }
 

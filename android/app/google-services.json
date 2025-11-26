@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "580797207136",
+    "project_id": "uzyio-58f60",
+    "storage_bucket": "uzyio-58f60.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580797207136:android:5c1feb0a56b5288ed3e905",
+        "android_client_info": {
+          "package_name": "com.example.uzyio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVzvUHwmdVNQVs1NrM_PqoMaIarHR2vHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

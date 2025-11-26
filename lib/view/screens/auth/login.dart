@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
+import 'package:uzyio/controller/auth_controller/auth_controller.dart';
+import 'package:uzyio/core/bindings/bindings.dart';
 import 'package:uzyio/view/screens/my_nav_bar/my_nav_bar.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/my_ripple_effect.dart';
@@ -19,6 +22,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  AuthController ctrl = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                 title: "Continue with Google",
                 icon: Assets.imagesGoogleIconSvg,
                 onTap: () {
-                  Get.to(() => MyNavBar(selectedIndex: 2));
+                  ctrl.googleAuth();
                 },
               ),
               SizedBox(height: 24),

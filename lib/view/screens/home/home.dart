@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
@@ -84,10 +85,10 @@ class _HomepageState extends State<Homepage> {
               children: [
                 // ---- Categories Buttons -----
                 SizedBox(height: 13),
+
                 Obx(
                   () =>
-                      (_ctrl.categoryList.isNotEmpty &&
-                              _ctrl.isLoading.value == false)
+                      (_ctrl.categoryList.isNotEmpty && !_ctrl.isLoading.value)
                           ? SingleChildScrollView(
                             physics: BouncingScrollPhysics(),
                             scrollDirection: Axis.horizontal,
@@ -118,21 +119,158 @@ class _HomepageState extends State<Homepage> {
                             ),
                           )
                           : (_ctrl.isLoading.value)
-                          ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [WaveLoading(size: 20)],
-                          )
+                          ? CategoryShimmer()
                           : Align(
                             alignment: Alignment.center,
                             child: MyText(
-                              text: "No Categories Avalible!",
+                              text: "No Categories Available!",
                               color: kWhiteColor,
                             ),
                           ),
                 ),
+
                 SizedBox(height: 14),
 
-                TryNowCard(),
+                // ---- Slider -----------
+                // Obx(() {
+                //   return SingleChildScrollView(
+                //     scrollDirection: Axis.horizontal,
+                //     physics: BouncingScrollPhysics(),
+                //     child: Row(
+                //       children:
+                //           _ctrl.isSliderLoading.value
+                //               ? List.generate(
+                //                 3,
+                //                 (_) => const TryNowCardShimmer(),
+                //               ) // show shimmer 3 times
+                //               : (_ctrl.isSliderLoading.value == false &&
+                //                   _ctrl.sliderList.isEmpty)
+                //               ? List.generate(
+                //                 3,
+                //                 (_) => const TryNowCardShimmer(),
+                //               )
+                //               : List.generate(_ctrl.sliderList.length, (index) {
+                //                 final item = _ctrl.sliderList[index];
+                //                 return TryNowCard(
+                //                   index: index,
+                //                   imageURL: item.coverImage,
+                //                   title: item.title,
+                //                   subTitle: item.prompt,
+                //                   onTap: () async {
+                //                     await _ctrl.getSingleTemplate(
+                //                       templateID: _ctrl.sliderList[index].id,
+                //                     );
+                //                     String? videoURL =
+                //                         _ctrl
+                //                             .singleTemplateData
+                //                             .value
+                //                             ?.videos[0];
+
+                //                     if (videoURL != null) {
+                //                       Get.to(
+                //                         () => DisplayContentPage(
+                //                           videoUrl: videoURL,
+                //                         ),
+                //                         binding: VideoBindings(),
+                //                       );
+                //                     }
+                //                   },
+                //                 );
+                //               }),
+                //     ),
+                //   );
+                // }),
+
+                // ------ New Slider --------
+                Obx(() {
+                  final itemCount =
+                      _ctrl.isSliderLoading.value
+                          ? 3
+                          : (_ctrl.isSliderLoading.value == false &&
+                              _ctrl.sliderList.isEmpty)
+                          ? 3
+                          : _ctrl.sliderList.length;
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 200, // Adjust based on your TryNowCard height
+                        child: PageView.builder(
+                          controller: _ctrl.pageController,
+                          physics: const BouncingScrollPhysics(),
+                          onPageChanged: (index) {
+                            _ctrl.currentPage.value = index;
+                          },
+                          itemCount: itemCount,
+                          itemBuilder: (context, index) {
+                            if (_ctrl.isSliderLoading.value ||
+                                (_ctrl.isSliderLoading.value == false &&
+                                    _ctrl.sliderList.isEmpty)) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: TryNowCardShimmer(),
+                              );
+                            }
+
+                            final item = _ctrl.sliderList[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: TryNowCard(
+                                index: index,
+                                imageURL: item.coverImage,
+                                title: item.title,
+                                subTitle: item.prompt,
+                                onTap: () async {
+                                  await _ctrl.getSingleTemplate(
+                                    templateID: _ctrl.sliderList[index].id,
+                                  );
+                                  String? videoURL =
+                                      _ctrl.singleTemplateData.value?.videos[0];
+
+                                  if (videoURL != null) {
+                                    Get.to(
+                                      () => DisplayContentPage(
+                                        videoUrl: videoURL,
+                                      ),
+                                      binding: VideoBindings(),
+                                    );
+                                  }
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      // Dots Indicator
+                      Obx(() {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            itemCount,
+                            (index) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _ctrl.currentPage.value == index ? 24 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color:
+                                    _ctrl.currentPage.value == index
+                                        ? kSecondaryColor // Selected dot color
+                                        : Colors
+                                            .grey
+                                            .shade400, // Unselected dot color
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                }),
 
                 // ------------------------------------------------
                 // ------------------------------------------------
@@ -156,6 +294,10 @@ class _HomepageState extends State<Homepage> {
                                       onTap: () {
                                         Get.to(
                                           () => SeeAllAiPhotoPage(
+                                            title:
+                                                _ctrl
+                                                    .templateList[mainIndex]
+                                                    .name,
                                             id:
                                                 _ctrl
                                                     .templateList[mainIndex]
@@ -262,114 +404,6 @@ class _HomepageState extends State<Homepage> {
                             ],
                           ),
                 ),
-
-                // ------------------------------------------------
-                // ------------------------------------------------
-
-                //  ------ See All -----
-                // Padding(
-                //   padding: AppSizes.HORIZONTAL,
-                //   child: SeeAll(
-                //     onTap: () {
-                //       Get.to(
-                //         () => SeeAllAiPhotoPage(title: "AI Photoshoots Male"),
-                //       );
-                //     },
-                //   ),
-                // ),
-
-                // // Cards
-                // SingleChildScrollView(
-                //   physics: BouncingScrollPhysics(),
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: List.generate(10, (index) {
-                //       return Padding(
-                //         padding: EdgeInsets.only(left: (index == 0) ? 20 : 15),
-                //         child: AiImageCard(
-                //           profileImage:
-                //               (index.isEven)
-                //                   ? Assets.imagesAiGril1
-                //                   : Assets.imagesAiGril2,
-                //           aiImage:
-                //               (index.isEven)
-                //                   ? Assets.imagesAiBoy1
-                //                   : Assets.imagesAiBoy2,
-                //           profileName: (index.isEven) ? "Richman" : "Vishal",
-                //         ),
-                //       );
-                //     }),
-                //   ),
-                // ),
-
-                // Community -> See All
-                // Padding(
-                //   padding: AppSizes.HORIZONTAL,
-                //   child: SeeAll(
-                //     title: "Community",
-                //     onTap: () {
-                //       Get.to(() => SeeAllAiPhotoPage(title: "Community"));
-                //     },
-                //   ),
-                // ),
-
-                // // Cards
-                // SingleChildScrollView(
-                //   physics: BouncingScrollPhysics(),
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: List.generate(10, (index) {
-                //       return Padding(
-                //         padding: EdgeInsets.only(left: (index == 0) ? 20 : 15),
-                //         child: AiVideoCard(
-                //           aiImage:
-                //               (index.isEven)
-                //                   ? Assets.imagesAiGril1
-                //                   : Assets.imagesAiGril2,
-                //           title:
-                //               (index.isEven)
-                //                   ? "The camera slowly turns"
-                //                   : "Visit to the mountains",
-                //         ),
-                //       );
-                //     }),
-                //   ),
-                // ),
-
-                // St. Valentine -> See All
-                // Padding(
-                //   padding: AppSizes.HORIZONTAL,
-                //   child: SeeAll(
-                //     title: "St. Valentine",
-                //     onTap: () {
-                //       Get.to(() => SeeAllAiPhotoPage(title: "St. Valentine"));
-                //     },
-                //   ),
-                // ),
-
-                // // Cards
-                // SingleChildScrollView(
-                //   physics: BouncingScrollPhysics(),
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: List.generate(10, (index) {
-                //       return Padding(
-                //         padding: EdgeInsets.only(left: (index == 0) ? 20 : 15),
-                //         child: AiImageCard(
-                //           profileImage:
-                //               (index.isEven)
-                //                   ? Assets.imagesAiGril1
-                //                   : Assets.imagesAiGril2,
-                //           aiImage:
-                //               (index.isEven)
-                //                   ? Assets.imagesAiBoy1
-                //                   : Assets.imagesAiBoy2,
-                //           profileName: (index.isEven) ? "Richman" : "Vishal",
-                //         ),
-                //       );
-                //     }),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -440,16 +474,17 @@ class _HomepageState extends State<Homepage> {
                               break;
                             case 4:
                               break;
-                            case 5:
-                              Get.to(() => Settings());
-                              break;
+                            // case 5:
+                            //   Get.to(() => Settings(), binding: AuthBindings());
+                            //   break;
 
                             default:
-                              Get.close(1);
-                              // Get.to(
-                              //   () => SettingPage(),
-                              //   transition: Transition.leftToRightWithFade,
-                              // );
+                              log("Updated");
+                              Get.to(
+                                () => Settings(),
+                                transition: Transition.rightToLeft,
+                                binding: AuthBindings(),
+                              );
                               break;
                           }
                         },
@@ -490,21 +525,32 @@ class _HomepageState extends State<Homepage> {
 }
 
 class TryNowCard extends StatelessWidget {
-  const TryNowCard({super.key});
+  final VoidCallback onTap;
+  final String imageURL, title, subTitle;
+  int index;
+  TryNowCard({
+    super.key,
+    required this.onTap,
+    required this.index,
+    required this.imageURL,
+    required this.title,
+    required this.subTitle,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: AppSizes.HORIZONTAL,
+      padding: EdgeInsets.only(left: (index == 0) ? 20 : 0, right: 10),
+      // padding: AppSizes.HORIZONTAL,
       child: Stack(
         children: [
           Container(
             height: 199,
-            width: Get.width,
+            // width: Get.width / 1.3,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
               image: DecorationImage(
-                image: AssetImage(Assets.imagesTopImageBk),
+                image: NetworkImage(imageURL),
                 fit: BoxFit.cover,
               ),
             ),
@@ -535,35 +581,38 @@ class TryNowCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             MyText(
-                              text: "Micro Magic",
+                              text: title,
                               size: 18,
                               weight: FontWeight.w700,
                             ),
-                            MyText(
-                              text: "Tiny crew stars your product",
-                              size: 14,
-                              weight: FontWeight.w400,
-                            ),
+                            // MyText(
+                            //   text: subTitle,
+                            //   size: 14,
+                            //   weight: FontWeight.w400,
+                            // ),
                           ],
                         ),
                       ),
 
-                      Container(
-                        width: 80,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          gradient: LinearGradient(
-                            colors: [Color(0xffBA41AB), Color(0xff7117B9)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.topRight,
+                      InkWell(
+                        onTap: onTap,
+                        child: Container(
+                          width: 80,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            gradient: LinearGradient(
+                              colors: [Color(0xffBA41AB), Color(0xff7117B9)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.topRight,
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: MyText(
-                            text: "Try Now",
-                            size: 12,
-                            weight: FontWeight.w600,
+                          child: Center(
+                            child: MyText(
+                              text: "Try Now",
+                              size: 12,
+                              weight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -574,6 +623,29 @@ class TryNowCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TryNowCardShimmer extends StatelessWidget {
+  const TryNowCardShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 10),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade400,
+        highlightColor: Colors.grey.shade200,
+        child: Container(
+          height: 199,
+          width: Get.width / 1.3,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade900,
+            borderRadius: BorderRadius.circular(7),
+          ),
+        ),
       ),
     );
   }

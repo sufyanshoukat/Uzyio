@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
+import 'package:uzyio/controller/auth_controller/auth_controller.dart';
 import 'package:uzyio/view/screens/settings/about_us.dart';
 import 'package:uzyio/view/screens/settings/app_preferences.dart';
 import 'package:uzyio/view/screens/settings/faqs.dart';
@@ -37,6 +39,9 @@ class _SettingsState extends State<Settings> {
     SettingModel(icon: Assets.imagesSG, title: "Delete account"),
     SettingModel(icon: Assets.imagesSH, title: "Log Out"),
   ];
+
+  final authCtrl = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,7 +85,10 @@ class _SettingsState extends State<Settings> {
                     case 6:
                       Get.to(() => ReportPage());
                       break;
-                    case 7:
+
+                    default:
+                      log("Logout Button");
+                      authCtrl.userLoggedOut();
                       break;
                   }
                 },

@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
@@ -10,16 +8,15 @@ import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/core/bindings/bindings.dart';
-import 'package:uzyio/view/screens/home/convert_image.dart';
 import 'package:uzyio/view/screens/home/display_content.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/home_page_widgets.dart';
-import 'package:uzyio/view/widget/my_button.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
 
 class SeeAllAiPhotoPage extends StatefulWidget {
+  String title;
   String id;
-  SeeAllAiPhotoPage({super.key, required this.id});
+  SeeAllAiPhotoPage({super.key, required this.id, required this.title});
 
   @override
   State<SeeAllAiPhotoPage> createState() => _SeeAllAiPhotoPageState();
@@ -42,7 +39,8 @@ class _SeeAllAiPhotoPageState extends State<SeeAllAiPhotoPage> {
       child: Obx(
         () => Scaffold(
           appBar: GeneralAppBar(
-            title: _ctrl.getSeeAllTempleteCategoryModel.value?.categories?.name,
+            title: widget.title,
+            // title: _ctrl.getSeeAllTempleteCategoryModel.value?.categories?.name,
           ),
           backgroundColor: kTransperentColor,
           body:
@@ -117,73 +115,6 @@ class _SeeAllAiPhotoPageState extends State<SeeAllAiPhotoPage> {
                     ),
                   ),
         ),
-      ),
-    );
-  }
-}
-
-class TakePhotoPopup extends StatefulWidget {
-  const TakePhotoPopup({super.key});
-
-  @override
-  State<TakePhotoPopup> createState() => _TakePhotoPopupState();
-}
-
-class _TakePhotoPopupState extends State<TakePhotoPopup> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 20),
-      decoration: AppStyling().myDecoration(
-        color: kDarkGrey1Color,
-        borderColor: kTransperentColor,
-        radius: 20,
-      ),
-      child: Column(
-        children: [
-          MyText(text: "Take Photo From", size: 20, weight: FontWeight.w800),
-          MyButton(
-            mTop: 29,
-            onTap: () async {
-              Get.back();
-              showLoadingDialog();
-
-              await Future.delayed(Duration(seconds: 5), () {
-                log("is This works");
-                Get.to(
-                  () => ConvertImagePage(),
-                  duration: Duration(milliseconds: 600),
-                  transition: Transition.rightToLeft,
-                );
-              });
-
-              // Get.back();
-              // Get.back();
-            },
-            buttonText: "Gallery",
-            isGradientBackground: false,
-            backgroundColor: kDarkGrey2Color,
-          ),
-          MyButton(
-            mTop: 13,
-            onTap: () async {
-              Get.back();
-              showLoadingDialog();
-
-              await Future.delayed(Duration(seconds: 5), () {
-                log("is This works");
-                Get.to(
-                  () => ConvertImagePage(),
-                  duration: Duration(milliseconds: 600),
-                  transition: Transition.rightToLeft,
-                );
-              });
-            },
-            buttonText: "Camera",
-            isGradientBackground: false,
-            backgroundColor: kDarkGrey2Color,
-          ),
-        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 // method to show the loading dialog
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:uzyio/constants/app_colors.dart';
@@ -11,6 +12,42 @@ void showLoadingDialog() {
       child: LoadingAnimationWidget.discreteCircle(
         color: kSecondaryColor,
         size: 60,
+      ),
+    ),
+    barrierDismissible: false,
+  );
+}
+
+void showVideoGenerationLoadingDialog() {
+  Get.dialog(
+    Dialog(
+      backgroundColor: kDarkGrey1Color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Loader at top
+            LoadingAnimationWidget.discreteCircle(
+              color: kSecondaryColor,
+              size: 60,
+            ),
+
+            SizedBox(height: 24),
+
+            // Message at bottom
+            Text(
+              'Please wait, video is generating\nDo not skip',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: kWhiteColor,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
     barrierDismissible: false,
@@ -70,17 +107,17 @@ String? validatePassword(String? value) {
   return null;
 }
 
-// displayToast({required String msg}) {
-//   Fluttertoast.showToast(
-//     msg: msg,
-//     toastLength: Toast.LENGTH_SHORT,
-//     gravity: ToastGravity.TOP,
-//     timeInSecForIosWeb: 1,
-//     backgroundColor: kSecondaryColor,
-//     textColor: Colors.white,
-//     fontSize: 14.0,
-//   );
-// }
+displayToast({required String msg}) {
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.TOP,
+    timeInSecForIosWeb: 1,
+    backgroundColor: kSecondaryColor,
+    textColor: Colors.white,
+    fontSize: 14.0,
+  );
+}
 
 // ------- Wave Loading Animation Widget ----------
 

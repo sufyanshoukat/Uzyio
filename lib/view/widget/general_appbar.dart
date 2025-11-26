@@ -130,6 +130,7 @@ class GeneralAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final Color? appBarColor, backIconColor;
   final List<Widget>? action;
   final bool isBackButton;
+  final VoidCallback? onBackTap;
   const GeneralAppBar2({
     super.key,
     this.title,
@@ -137,6 +138,7 @@ class GeneralAppBar2 extends StatelessWidget implements PreferredSizeWidget {
     this.backIconColor,
     this.action,
     this.isBackButton = true,
+    this.onBackTap,
   });
 
   Size get preferredSize => Size.fromHeight(80);
@@ -155,9 +157,11 @@ class GeneralAppBar2 extends StatelessWidget implements PreferredSizeWidget {
           Visibility(
             visible: isBackButton,
             child: MyRoundButton(
-              onTap: () {
-                Get.back();
-              },
+              onTap:
+                  onBackTap ??
+                  () {
+                    Get.back();
+                  },
               child: CommonImageView(svgPath: Assets.imagesCrossIconS),
             ),
           ),

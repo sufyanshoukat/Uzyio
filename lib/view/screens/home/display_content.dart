@@ -3,13 +3,12 @@ import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/controller/video_controller/video_controller.dart';
+import 'package:uzyio/view/screens/generate_content/create_style.dart';
 import 'package:video_player/video_player.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
-import 'package:uzyio/view/screens/home/see_all_ai_photo.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
-import 'package:uzyio/view/widget/custom_dialog_widget.dart';
 import 'package:uzyio/view/widget/my_button.dart';
 import 'package:uzyio/view/widget/my_round_button.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
@@ -39,6 +38,7 @@ class _DisplayContentPageState extends State<DisplayContentPage> {
 
   @override
   void dispose() {
+    videoController.controller.pause();
     // Properly dispose video when leaving screen
     videoController.disposeVideo();
     super.dispose();
@@ -211,7 +211,14 @@ class _DisplayContentPageState extends State<DisplayContentPage> {
                         mTop: 20,
                         mBottom: 30,
                         onTap: () {
-                          Get.dialog(CustomDialog(child: TakePhotoPopup()));
+                          videoController.disposeVideo();
+
+                          Get.to(
+                            () => CreateStylePage(
+                              endPoint:
+                                  "${_ctrl.singleTemplateData.value?.apiEndpoint}",
+                            ),
+                          );
                         },
                         buttonText: "Try Style",
                       ),

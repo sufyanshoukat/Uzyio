@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/controller/theme/theme_controller.dart';
-import 'package:uzyio/view/screens/home/view_images.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/my_ripple_effect.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
@@ -376,4 +376,66 @@ class CategoriesModels {
   String icon;
   String title;
   CategoriesModels({required this.icon, required this.title});
+}
+
+class CategoryShimmer extends StatelessWidget {
+  final int itemCount;
+
+  const CategoryShimmer({super.key, this.itemCount = 5});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.only(left: 20),
+      child: Row(
+        children: List.generate(itemCount, (index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade200,
+              highlightColor: Colors.grey.shade400,
+              child: Container(
+                width: 90,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class ShimmerBox extends StatelessWidget {
+  final double width;
+  final double height;
+  final double radius;
+
+  const ShimmerBox({
+    super.key,
+    required this.width,
+    required this.height,
+    this.radius = 12,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade800,
+      highlightColor: Colors.grey.shade600,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+    );
+  }
 }
