@@ -205,9 +205,7 @@ class AuthController extends GetxController {
 
       await auth.signInWithCredential(credential);
 
-      displayToast(msg: "User logged in successfully.");
-
-      socialLoginMethod(
+      await socialLoginMethod(
         name: auth.currentUser?.displayName ?? "",
         email: auth.currentUser?.email ?? "",
         profileUrl: auth.currentUser?.photoURL ?? "",
@@ -238,8 +236,8 @@ class AuthController extends GetxController {
       final response = await apiService.post(
         postAuthURL,
         body,
-        true,
-        showResult: true,
+        false,
+        showResult: false,
         successCode: 200,
       );
 
@@ -254,6 +252,7 @@ class AuthController extends GetxController {
 
           // ---------- NAVIGATE TO HOME ----------
           Get.offAll(() => MyNavBar(selectedIndex: 2), binding: HomeBindings());
+          displayToast(msg: "User logged in successfully.");
         }
       }
     } catch (e) {
