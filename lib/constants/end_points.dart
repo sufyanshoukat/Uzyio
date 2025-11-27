@@ -1,4 +1,4 @@
-String baseUrl = "http://47.252.37.188:3050/";
+String baseUrl = "http://192.168.100.14:3000";
 String getListCategoriesURL = "${baseUrl}api/user/categories/list";
 String getTemplateURL({required String categoryID}) {
   return "${baseUrl}api/user/categories?category_list_id=$categoryID";
