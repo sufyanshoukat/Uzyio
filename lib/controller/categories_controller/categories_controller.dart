@@ -14,6 +14,7 @@ import 'package:uzyio/model/categories/categoies_list_model.dart';
 import 'package:uzyio/model/categories/category_template_model.dart';
 import 'package:uzyio/model/categories/see_all_template_model.dart';
 import 'package:uzyio/model/categories/single_template_mode.dart';
+import 'package:uzyio/model/categories/slider_model.dart';
 import 'package:uzyio/view/screens/generate_content/generated_style.dart';
 
 class CategoriesController extends GetxController {
@@ -42,7 +43,7 @@ class CategoriesController extends GetxController {
 
   var downloadProgress = 0.0.obs;
 
-  List<TemplateData> sliderList = <TemplateData>[];
+  List<SliderData> sliderList = <SliderData>[];
   RxBool isSliderLoading = false.obs;
 
   // LIST CATEGORIES
@@ -145,6 +146,7 @@ class CategoriesController extends GetxController {
 
   Future<void> getSeeAllTemplate({required String categoryID}) async {
     try {
+      log("SEE ALL API Hit");
       isSeeAllLoading(true);
 
       final response = await apiService.get(
@@ -480,6 +482,7 @@ class CategoriesController extends GetxController {
         SliderResponse sliderData = SliderResponse.fromJson(response);
 
         sliderList.clear();
+        // sliderList.addAll(sliderData.sliders);
         sliderList.addAll(sliderData.sliders);
 
         log("Sliders loaded: ${sliderList.length}");

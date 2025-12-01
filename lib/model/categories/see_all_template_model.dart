@@ -59,8 +59,15 @@ class TemplateItem {
   final String? title;
   final String? coverImage;
   final bool? isPremium;
+  final bool? isVideo;
 
-  TemplateItem({this.id, this.title, this.coverImage, this.isPremium});
+  TemplateItem({
+    this.id,
+    this.title,
+    this.coverImage,
+    this.isPremium,
+    this.isVideo,
+  });
 
   factory TemplateItem.fromJson(Map<String, dynamic> json) {
     return TemplateItem(
@@ -68,6 +75,7 @@ class TemplateItem {
       title: json['title'],
       coverImage: json['cover_image'],
       isPremium: json['is_premium'],
+      isVideo: json['is_video'],
     );
   }
 }

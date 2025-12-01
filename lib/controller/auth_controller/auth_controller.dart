@@ -7,6 +7,7 @@ import 'package:uzyio/constants/end_points.dart';
 import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/core/bindings/bindings.dart';
 import 'package:uzyio/core/common/global_instance.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/screens/auth/login.dart';
 import 'package:uzyio/view/screens/my_nav_bar/my_nav_bar.dart';
 
@@ -146,6 +147,7 @@ class AuthController extends GetxController {
     final token = await getToken();
 
     if (token != null && token.isNotEmpty) {
+      await UserService.instance.getUserInformation();
       log("User already logged in — Token: $token");
       Get.offAll(() => MyNavBar(selectedIndex: 2), binding: HomeBindings());
     } else {
@@ -231,6 +233,7 @@ class AuthController extends GetxController {
         "name": name,
         "email": email,
         "profile": profileUrl,
+        "fcm_token": "$getFcmToken",
       };
 
       final response = await apiService.post(
@@ -249,6 +252,7 @@ class AuthController extends GetxController {
 
           // ---------- SAVE TOKEN ----------
           await saveToken(token);
+          await UserService.instance.getUserInformation();
 
           // ---------- NAVIGATE TO HOME ----------
           Get.offAll(() => MyNavBar(selectedIndex: 2), binding: HomeBindings());

@@ -15,8 +15,8 @@ Map<String, String> basicHeaderInfo() => {
 
 bearerHeaderInfo() async {
   final prefs = await SharedPreferences.getInstance();
-  String? accessToken = await prefs.getString('token');
-  log("Access Token = $accessToken");
+  String? accessToken = await prefs.getString('user_token');
+  log("user_token = $accessToken");
   return {
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json",

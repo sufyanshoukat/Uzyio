@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
+import 'package:uzyio/constants/loading_animation.dart';
+import 'package:uzyio/controller/my_creation/my_creation_controller.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/home_page_widgets.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
@@ -15,118 +18,78 @@ class MyCreationPage extends StatefulWidget {
 }
 
 class _MyCreationPageState extends State<MyCreationPage> {
-  List<String> tabItems = [
-    "Image Generations",
-    "Video Generations",
-    "Text to Image",
-  ];
-  int selectedIndex = 0;
+  // List<String> tabItems = [
+  //   "Image Generations",
+  //   "Video Generations",
+  //   "Text to Image",
+  // ];
+  // int selectedIndex = 0;
+
+  final _ctrl = Get.find<MyCreationController>();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStyling().background(image: Assets.imagesBkImage),
-      child: Scaffold(
-        backgroundColor: kTransperentColor,
-        appBar: GeneralAppBar2(title: "My Creations"),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ---- Categories Buttons -----
-              SizedBox(height: 13),
-              SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(tabItems.length, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(left: (index == 0) ? 20 : 5),
-                      child: _CategorieButton(
-                        title: tabItems[index],
-                        isSeleted: selectedIndex == index,
-                        onTap: () {
-                          selectedIndex = index;
-                          setState(() {});
-                        },
+    return Obx(
+      () => Container(
+        decoration: AppStyling().background(image: Assets.imagesBkImage),
+        child: Scaffold(
+          backgroundColor: kTransperentColor,
+          appBar: GeneralAppBar2(title: "My Creations"),
+          body:
+              (_ctrl.myCreation.isNotEmpty && _ctrl.isLoading.value == false)
+                  ? Padding(
+                    padding: AppSizes.DEFAULT,
+                    child: GridView.builder(
+                      itemCount: _ctrl.myCreation.length,
+
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        mainAxisExtent: 260,
                       ),
-                    );
-                  }),
-                ),
-              ),
+                      itemBuilder: (context, index) {
+                        final model = _ctrl.myCreation[index];
 
-              // ----------- Other Content ---------------
-              Padding(
-                padding: AppSizes.HORIZONTAL,
-                child: MyText(
-                  paddingTop: 28,
-                  paddingBottom: 16,
-                  text: "Image Generations",
-                  size: 18,
-                  weight: FontWeight.w700,
-                  color: kPrimaryColor,
-                ),
-              ),
+                        return TemplateCard(
+                          isVideo: true,
+                          height: 260,
+                          width: Get.width,
+                          URL: model.file.toString(),
 
-              // Cards
-              SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(10, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(left: (index == 0) ? 20 : 15),
-                      child: AiImageCard(
-                        profileImage:
-                            (index.isEven)
-                                ? Assets.imagesAiGril1
-                                : Assets.imagesAiGril2,
-                        aiImageURL:
-                            (index.isEven)
-                                ? Assets.imagesAiBoy1
-                                : Assets.imagesAiBoy2,
-                        profileName: (index.isEven) ? "Richman" : "Vishal",
-                      ),
-                    );
-                  }),
-                ),
-              ),
+                          // profileName: "${model.title}",
+                          // isProCard:
+                          onTap: () async {
+                            // await _ctrl.getSingleTemplate(
+                            //   templateID:
+                            //       "${_ctrl.getSeeAllTempleteCategoryModel.value!.categories!.templates[index].id}",
+                            // );
+                            // String? url = model.coverImage;
 
-              Padding(
-                padding: AppSizes.HORIZONTAL,
-                child: MyText(
-                  paddingTop: 28,
-                  paddingBottom: 16,
-                  text: "Video Generations",
-                  size: 18,
-                  weight: FontWeight.w700,
-                  color: kPrimaryColor,
-                ),
-              ),
-
-              // Cards
-              SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(10, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(left: (index == 0) ? 20 : 15),
-                      child: AiVideoCard(
-                        aiImage:
-                            (index.isEven)
-                                ? Assets.imagesAiGril1
-                                : Assets.imagesAiGril2,
-                        title:
-                            (index.isEven)
-                                ? "The camera slowly turns"
-                                : "Visit to the mountains",
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ],
-          ),
+                            // if (url != null) {
+                            //   Get.to(
+                            //     () => DisplayContentPage(
+                            //       videoUrl: url,
+                            //       isVideo: model.isVideo as bool,
+                            //     ),
+                            //     binding: VideoBindings(),
+                            //   );
+                            // }
+                          },
+                        );
+                      },
+                    ),
+                  )
+                  : (_ctrl.isLoading.value)
+                  ? Center(child: WaveLoading(size: 40))
+                  : Center(
+                    child: MyText(
+                      text: "No Categories Avalible!",
+                      color: kWhiteColor,
+                    ),
+                  ),
         ),
       ),
     );

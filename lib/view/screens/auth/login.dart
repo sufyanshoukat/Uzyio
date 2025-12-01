@@ -8,7 +8,6 @@ import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/controller/auth_controller/auth_controller.dart';
-import 'package:uzyio/core/bindings/bindings.dart';
 import 'package:uzyio/view/screens/my_nav_bar/my_nav_bar.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/my_ripple_effect.dart';

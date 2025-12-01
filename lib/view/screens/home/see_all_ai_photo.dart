@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uzyio/constants/app_colors.dart';
@@ -8,11 +9,13 @@ import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/core/bindings/bindings.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/screens/home/display_content.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/home_page_widgets.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
 
+// ignore: must_be_immutable
 class SeeAllAiPhotoPage extends StatefulWidget {
   String title;
   String id;
@@ -23,12 +26,13 @@ class SeeAllAiPhotoPage extends StatefulWidget {
 }
 
 class _SeeAllAiPhotoPageState extends State<SeeAllAiPhotoPage> {
-  int selectedIndex = 0;
+  // int selectedIndex = 0;
   CategoriesController _ctrl = Get.put(CategoriesController());
 
   @override
   void initState() {
     _ctrl.getSeeAllTemplate(categoryID: widget.id);
+    UserService.instance.getUserInformation();
     super.initState();
   }
 
@@ -36,6 +40,7 @@ class _SeeAllAiPhotoPageState extends State<SeeAllAiPhotoPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: AppStyling().background(image: Assets.imagesBkImage),
+
       child: Obx(
         () => Scaffold(
           appBar: GeneralAppBar(
@@ -65,39 +70,36 @@ class _SeeAllAiPhotoPageState extends State<SeeAllAiPhotoPage> {
                         mainAxisExtent: 260,
                       ),
                       itemBuilder: (context, index) {
-                        return AiImageCard(
+                        final model =
+                            _ctrl
+                                .getSeeAllTempleteCategoryModel
+                                .value!
+                                .categories!
+                                .templates[index];
+
+                        log(" Item:: ${model.coverImage}");
+
+                        return TemplateCard(
+                          isVideo: model.isVideo as bool,
                           height: 260,
                           width: Get.width,
-                          // profileImage:
-                          //     (index.isEven)
-                          //         ? Assets.imagesAiGril1
-                          //         : Assets.imagesAiGril2,
-                          aiImageURL:
-                              "${_ctrl.getSeeAllTempleteCategoryModel.value?.categories?.templates[index].coverImage}",
-                          profileName:
-                              "${_ctrl.getSeeAllTempleteCategoryModel.value?.categories?.templates[index].title}",
-                          isProCard:
-                              _ctrl
-                                      .getSeeAllTempleteCategoryModel
-                                      .value!
-                                      .categories!
-                                      .templates[index]
-                                      .isPremium
-                                  as bool,
+                          URL: "${model.coverImage}",
+                          profileName: "${model.title}",
+                          isProCard: model.isPremium as bool,
 
                           onTap: () async {
-                            log("SSSSS");
-
                             await _ctrl.getSingleTemplate(
                               templateID:
                                   "${_ctrl.getSeeAllTempleteCategoryModel.value!.categories!.templates[index].id}",
                             );
-                            String? videoURL =
-                                _ctrl.singleTemplateData.value?.videos[0];
+                            String? url = model.coverImage;
 
-                            if (videoURL != null) {
+                            if (url != null) {
                               Get.to(
-                                () => DisplayContentPage(videoUrl: videoURL),
+                                () => DisplayContentPage(
+                                  videoUrl: url,
+                                  isVideo: model.isVideo as bool,
+                                ),
                                 binding: VideoBindings(),
                               );
                             }

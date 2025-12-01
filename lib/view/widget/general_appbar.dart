@@ -81,7 +81,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           InkWell(
             onTap: onDrawerTap,
             child: CommonImageView(
-              imagePath: profileImage ?? Assets.imagesProfileImage2,
+              url: profileImage,
               height: 41,
               width: 41,
               radius: 100,

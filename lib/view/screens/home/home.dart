@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
@@ -10,6 +9,7 @@ import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/controller/theme/theme_controller.dart';
 import 'package:uzyio/core/bindings/bindings.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/screens/home/display_content.dart';
 import 'package:uzyio/view/screens/home/see_all_ai_photo.dart';
 import 'package:uzyio/view/screens/my_creations/my_creations.dart';
@@ -72,6 +72,8 @@ class _HomepageState extends State<Homepage> {
 
           // ---- App Bar -----
           appBar: HomeAppBar(
+            profileImage: UserService.instance.userModel.value.profile,
+            title: "${UserService.instance.userModel.value.name}",
             onDrawerTap: () {
               _scaffoldKey.currentState?.openDrawer();
             },
@@ -131,57 +133,7 @@ class _HomepageState extends State<Homepage> {
 
                 SizedBox(height: 14),
 
-                // ---- Slider -----------
-                // Obx(() {
-                //   return SingleChildScrollView(
-                //     scrollDirection: Axis.horizontal,
-                //     physics: BouncingScrollPhysics(),
-                //     child: Row(
-                //       children:
-                //           _ctrl.isSliderLoading.value
-                //               ? List.generate(
-                //                 3,
-                //                 (_) => const TryNowCardShimmer(),
-                //               ) // show shimmer 3 times
-                //               : (_ctrl.isSliderLoading.value == false &&
-                //                   _ctrl.sliderList.isEmpty)
-                //               ? List.generate(
-                //                 3,
-                //                 (_) => const TryNowCardShimmer(),
-                //               )
-                //               : List.generate(_ctrl.sliderList.length, (index) {
-                //                 final item = _ctrl.sliderList[index];
-                //                 return TryNowCard(
-                //                   index: index,
-                //                   imageURL: item.coverImage,
-                //                   title: item.title,
-                //                   subTitle: item.prompt,
-                //                   onTap: () async {
-                //                     await _ctrl.getSingleTemplate(
-                //                       templateID: _ctrl.sliderList[index].id,
-                //                     );
-                //                     String? videoURL =
-                //                         _ctrl
-                //                             .singleTemplateData
-                //                             .value
-                //                             ?.videos[0];
-
-                //                     if (videoURL != null) {
-                //                       Get.to(
-                //                         () => DisplayContentPage(
-                //                           videoUrl: videoURL,
-                //                         ),
-                //                         binding: VideoBindings(),
-                //                       );
-                //                     }
-                //                   },
-                //                 );
-                //               }),
-                //     ),
-                //   );
-                // }),
-
-                // ------ New Slider --------
+                // --- SLIDERS ---
                 Obx(() {
                   final itemCount =
                       _ctrl.isSliderLoading.value
@@ -219,6 +171,7 @@ class _HomepageState extends State<Homepage> {
                               ),
                               child: TryNowCard(
                                 index: index,
+                                isVideo: item.isVideo,
                                 imageURL: item.coverImage,
                                 title: item.title,
                                 subTitle: item.prompt,
@@ -226,13 +179,13 @@ class _HomepageState extends State<Homepage> {
                                   await _ctrl.getSingleTemplate(
                                     templateID: _ctrl.sliderList[index].id,
                                   );
-                                  String? videoURL =
-                                      _ctrl.singleTemplateData.value?.videos[0];
+                                  String contentURL = item.coverImage;
 
-                                  if (videoURL != null) {
+                                  if (contentURL.isNotEmpty) {
                                     Get.to(
                                       () => DisplayContentPage(
-                                        videoUrl: videoURL,
+                                        videoUrl: contentURL,
+                                        isVideo: item.isVideo,
                                       ),
                                       binding: VideoBindings(),
                                     );
@@ -272,11 +225,9 @@ class _HomepageState extends State<Homepage> {
                   );
                 }),
 
-                // ------------------------------------------------
-                // ------------------------------------------------
+                // --- TEMPLATES LIST ---
                 Obx(
                   () =>
-                      // ----- Templates List ------
                       (_ctrl.categoryList.isNotEmpty &&
                               _ctrl.isTemplateLoading.value == false)
                           ? Column(
@@ -320,31 +271,28 @@ class _HomepageState extends State<Homepage> {
                                             .templates
                                             .length,
                                         (index) {
+                                          final model =
+                                              _ctrl
+                                                  .templateList[mainIndex]
+                                                  .templates[index];
+
+                                          // _ctrl
+                                          // .getSeeAllTempleteCategoryModel
+                                          // .value
+                                          // ?.categories
+                                          // ?.templates[index];
+
                                           return Padding(
                                             padding: EdgeInsets.only(
                                               left: (index == 0) ? 20 : 15,
                                             ),
-                                            child: AiImageCard(
-                                              isProCard:
-                                                  _ctrl
-                                                      .templateList[mainIndex]
-                                                      .templates[index]
-                                                      .isPremium,
-                                              profileImage:
-                                                  (index.isEven)
-                                                      ? Assets.imagesAiGril1
-                                                      : Assets.imagesAiGril2,
-                                              aiImageURL:
-                                                  // "https://res.cloudinary.com/dxoforyo6/image/upload/v1763619869/templates/covers/u8xgkoe4lnd9m5moe9a0.jpg",
-                                                  _ctrl
-                                                      .templateList[mainIndex]
-                                                      .templates[index]
-                                                      .coverImage,
-                                              profileName:
-                                                  _ctrl
-                                                      .templateList[mainIndex]
-                                                      .templates[index]
-                                                      .title,
+
+                                            child: TemplateCard(
+                                              isVideo: model.isVideo,
+                                              isProCard: model.isPremium,
+
+                                              URL: model.coverImage,
+                                              profileName: model.title,
 
                                               onTap: () async {
                                                 await _ctrl.getSingleTemplate(
@@ -354,22 +302,71 @@ class _HomepageState extends State<Homepage> {
                                                           .templates[index]
                                                           .id,
                                                 );
-                                                String? videoURL =
-                                                    _ctrl
-                                                        .singleTemplateData
-                                                        .value
-                                                        ?.videos[0];
 
-                                                if (videoURL != null) {
+                                                String? contentURL =
+                                                    model.coverImage;
+
+                                                if (contentURL.isNotEmpty) {
                                                   Get.to(
                                                     () => DisplayContentPage(
-                                                      videoUrl: videoURL,
+                                                      videoUrl: contentURL,
+                                                      isVideo: model.isVideo,
+                                                      // contentURL,
                                                     ),
                                                     binding: VideoBindings(),
                                                   );
                                                 }
                                               },
                                             ),
+
+                                            // TemplateCard(
+                                            //   isVideo:
+                                            //       _ctrl
+                                            //               .getSeeAllTempleteCategoryModel
+                                            //               .value!
+                                            //               .categories!
+                                            //               .templates[index]
+                                            //               .isVideo
+                                            //           as bool,
+                                            //   isProCard:
+                                            //       _ctrl
+                                            //               .getSeeAllTempleteCategoryModel
+                                            //               .value!
+                                            //               .categories!
+                                            //               .templates[index]
+                                            //               .isPremium
+                                            //           as bool,
+
+                                            //   URL:
+                                            //       "${model?.coverImage.toString()}",
+
+                                            //   profileName:
+                                            //       "${model?.title.toString()}",
+
+                                            //   onTap: () async {
+                                            //     await _ctrl.getSingleTemplate(
+                                            //       templateID:
+                                            //           _ctrl
+                                            //               .templateList[mainIndex]
+                                            //               .templates[index]
+                                            //               .id,
+                                            //     );
+                                            //     String? videoURL =
+                                            //         _ctrl
+                                            //             .singleTemplateData
+                                            //             .value
+                                            //             ?.videos[0];
+
+                                            //     if (videoURL != null) {
+                                            //       Get.to(
+                                            //         () => DisplayContentPage(
+                                            //           videoUrl: videoURL,
+                                            //         ),
+                                            //         binding: VideoBindings(),
+                                            //       );
+                                            //     }
+                                            //   },
+                                            // ),
                                           );
                                         },
                                       ),
@@ -465,7 +462,10 @@ class _HomepageState extends State<Homepage> {
                               Get.to(() => MyProfile());
                               break;
                             case 1:
-                              Get.to(() => MyCreationPage());
+                              Get.to(
+                                () => MyCreationPage(),
+                                binding: MyCreationBindings(),
+                              );
                               break;
                             case 2:
                               break;
@@ -517,133 +517,6 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TryNowCard extends StatelessWidget {
-  final VoidCallback onTap;
-  final String imageURL, title, subTitle;
-  int index;
-  TryNowCard({
-    super.key,
-    required this.onTap,
-    required this.index,
-    required this.imageURL,
-    required this.title,
-    required this.subTitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: (index == 0) ? 20 : 0, right: 10),
-      // padding: AppSizes.HORIZONTAL,
-      child: Stack(
-        children: [
-          Container(
-            height: 199,
-            // width: Get.width / 1.3,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-              image: DecorationImage(
-                image: NetworkImage(imageURL),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              height: 199,
-              width: Get.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                gradient: LinearGradient(
-                  colors: [
-                    kBlackColor.withValues(alpha: 0.2),
-                    kBlackColor.withValues(alpha: 0.4),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText(
-                              text: title,
-                              size: 18,
-                              weight: FontWeight.w700,
-                            ),
-                            // MyText(
-                            //   text: subTitle,
-                            //   size: 14,
-                            //   weight: FontWeight.w400,
-                            // ),
-                          ],
-                        ),
-                      ),
-
-                      InkWell(
-                        onTap: onTap,
-                        child: Container(
-                          width: 80,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            gradient: LinearGradient(
-                              colors: [Color(0xffBA41AB), Color(0xff7117B9)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.topRight,
-                            ),
-                          ),
-                          child: Center(
-                            child: MyText(
-                              text: "Try Now",
-                              size: 12,
-                              weight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TryNowCardShimmer extends StatelessWidget {
-  const TryNowCardShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 10),
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade400,
-        highlightColor: Colors.grey.shade200,
-        child: Container(
-          height: 199,
-          width: Get.width / 1.3,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade900,
-            borderRadius: BorderRadius.circular(7),
           ),
         ),
       ),

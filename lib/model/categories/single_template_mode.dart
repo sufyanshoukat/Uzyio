@@ -151,21 +151,21 @@ class TemplateStats {
 
 // SLIDER SMALL MODEL
 
-class SliderResponse {
-  final String message;
-  final List<TemplateData> sliders;
+// class SliderResponse {
+//   final String message;
+//   final List<TemplateData> sliders;
 
-  SliderResponse({required this.message, required this.sliders});
+//   SliderResponse({required this.message, required this.sliders});
 
-  factory SliderResponse.fromJson(Map<String, dynamic> json) {
-    return SliderResponse(
-      message: json['message'] ?? '',
-      sliders:
-          json['sliders'] != null && json['sliders'] is List
-              ? List<TemplateData>.from(
-                json['sliders'].map((item) => TemplateData.fromJson(item)),
-              )
-              : [],
-    );
-  }
-}
+//   factory SliderResponse.fromJson(Map<String, dynamic> json) {
+//     return SliderResponse(
+//       message: json['message'] ?? '',
+//       sliders:
+//           json['sliders'] != null && json['sliders'] is List
+//               ? List<TemplateData>.from(
+//                 json['sliders'].map((item) => TemplateData.fromJson(item)),
+//               )
+//               : [],
+//     );
+//   }
+// }

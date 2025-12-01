@@ -19,6 +19,7 @@ class CategoryTemplateModel {
 
 class CategoryTemplateItem {
   final String id;
+
   final String name;
   final String? description;
   final bool isActive;
@@ -60,22 +61,23 @@ class TemplateItem {
   final String title;
   final String coverImage;
   final bool isPremium;
+  final bool isVideo;
 
   TemplateItem({
     required this.id,
     required this.title,
     required this.coverImage,
     required this.isPremium,
+    required this.isVideo,
   });
 
   factory TemplateItem.fromJson(Map<String, dynamic> json) {
     return TemplateItem(
-      id: json.containsKey('id') ? json['id'] ?? '' : '',
-      title: json.containsKey('title') ? json['title'] ?? '' : '',
-      coverImage:
-          json.containsKey('cover_image') ? json['cover_image'] ?? '' : '',
-      isPremium:
-          json.containsKey('is_premium') ? json['is_premium'] ?? false : false,
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      coverImage: json['cover_image']?.toString() ?? '',
+      isPremium: json['is_premium'] ?? false,
+      isVideo: json['is_video'] ?? false,
     );
   }
 }
