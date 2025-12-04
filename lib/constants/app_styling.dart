@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uzyio/constants/app_colors.dart';
+import 'package:uzyio/constants/app_images.dart';
 
 class AppStyling {
   BoxDecoration myDecoration({
@@ -74,6 +75,16 @@ class AppStyling {
   BoxDecoration background({required String image}) {
     return BoxDecoration(
       image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+    );
+  }
+
+  BoxDecoration gradientBK({double radius = 10}) {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(radius),
+      image: DecorationImage(
+        image: AssetImage(Assets.imagesStreakBkImage),
+        fit: BoxFit.fill,
+      ),
     );
   }
 }

@@ -43,3 +43,8 @@ String getUserAPI = "${baseUrl}api/auth/me";
 String getMyCreationAPI({required String id}) {
   return "${baseUrl}api/user/my-creations?user_id=$id";
 }
+
+// FEED API
+String feedAPIURL({required String page, required String limit}) {
+  return "${baseUrl}api/user/explore?page=$page&limit=$limit";
+}

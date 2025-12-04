@@ -38,6 +38,10 @@ class Assets {
   /// assets/images/background_image_4.png
   static const String imagesBackgroundImage4 = "assets/images/background_image_4.png";
 
+  /// Assets for imagesBalanceIcon
+  /// assets/images/balance_icon.png
+  static const String imagesBalanceIcon = "assets/images/balance_icon.png";
+
   /// Assets for imagesBkImage
   /// assets/images/bk_image.png
   static const String imagesBkImage = "assets/images/bk_image.png";
@@ -49,6 +53,10 @@ class Assets {
   /// Assets for imagesBkImageSimple
   /// assets/images/bk_image_simple.png
   static const String imagesBkImageSimple = "assets/images/bk_image_simple.png";
+
+  /// Assets for imagesCalenderDailyLogin
+  /// assets/images/calender_daily_login.png
+  static const String imagesCalenderDailyLogin = "assets/images/calender_daily_login.png";
 
   /// Assets for imagesCameraPerpleIcon
   /// assets/images/camera_perple_icon.svg
@@ -161,6 +169,10 @@ class Assets {
   /// Assets for imagesGoogleIconSvg
   /// assets/images/google_icon_svg.svg
   static const String imagesGoogleIconSvg = "assets/images/google_icon_svg.svg";
+
+  /// Assets for imagesGradientStreakIcon
+  /// assets/images/gradient_streak_icon.png
+  static const String imagesGradientStreakIcon = "assets/images/gradient_streak_icon.png";
 
   /// Assets for imagesHomeWhiteTheme
   /// assets/images/home_white_theme.png
@@ -290,6 +302,66 @@ class Assets {
   /// assets/images/profile_image_2.png
   static const String imagesProfileImage2 = "assets/images/profile_image_2.png";
 
+  /// Assets for imagesRA
+  /// assets/images/r_a.png
+  static const String imagesRA = "assets/images/r_a.png";
+
+  /// Assets for imagesRB
+  /// assets/images/r_b.png
+  static const String imagesRB = "assets/images/r_b.png";
+
+  /// Assets for imagesRC
+  /// assets/images/r_c.png
+  static const String imagesRC = "assets/images/r_c.png";
+
+  /// Assets for imagesRD
+  /// assets/images/r_d.png
+  static const String imagesRD = "assets/images/r_d.png";
+
+  /// Assets for imagesRE
+  /// assets/images/r_e.png
+  static const String imagesRE = "assets/images/r_e.png";
+
+  /// Assets for imagesRF
+  /// assets/images/r_f.png
+  static const String imagesRF = "assets/images/r_f.png";
+
+  /// Assets for imagesRG
+  /// assets/images/r_g.png
+  static const String imagesRG = "assets/images/r_g.png";
+
+  /// Assets for imagesRH
+  /// assets/images/r_h.png
+  static const String imagesRH = "assets/images/r_h.png";
+
+  /// Assets for imagesRHCoinsIcon
+  /// assets/images/r_h_coins_icon.png
+  static const String imagesRHCoinsIcon = "assets/images/r_h_coins_icon.png";
+
+  /// Assets for imagesRHMagicIcon
+  /// assets/images/r_h_magic_icon.png
+  static const String imagesRHMagicIcon = "assets/images/r_h_magic_icon.png";
+
+  /// Assets for imagesRHSearch
+  /// assets/images/r_h_search.png
+  static const String imagesRHSearch = "assets/images/r_h_search.png";
+
+  /// Assets for imagesRI
+  /// assets/images/r_i.png
+  static const String imagesRI = "assets/images/r_i.png";
+
+  /// Assets for imagesRdA
+  /// assets/images/rd_a.png
+  static const String imagesRdA = "assets/images/rd_a.png";
+
+  /// Assets for imagesRdB
+  /// assets/images/rd_b.png
+  static const String imagesRdB = "assets/images/rd_b.png";
+
+  /// Assets for imagesRdC
+  /// assets/images/rd_c.png
+  static const String imagesRdC = "assets/images/rd_c.png";
+
   /// Assets for imagesReactangleImage
   /// assets/images/reactangle_image.png
   static const String imagesReactangleImage = "assets/images/reactangle_image.png";
@@ -361,6 +433,14 @@ class Assets {
   /// Assets for imagesStackImagesPhoto
   /// assets/images/stack_images_photo.png
   static const String imagesStackImagesPhoto = "assets/images/stack_images_photo.png";
+
+  /// Assets for imagesStreakBkImage
+  /// assets/images/streak_bk_image.png
+  static const String imagesStreakBkImage = "assets/images/streak_bk_image.png";
+
+  /// Assets for imagesStreakIcon
+  /// assets/images/streak_icon.png
+  static const String imagesStreakIcon = "assets/images/streak_icon.png";
 
   /// Assets for imagesSupportCameraIconSvg
   /// assets/images/support_camera_icon_svg.svg

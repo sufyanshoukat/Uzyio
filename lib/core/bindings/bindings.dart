@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:uzyio/controller/auth_controller/auth_controller.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
+import 'package:uzyio/controller/feed_controller/feed_controller.dart';
 import 'package:uzyio/controller/my_creation/my_creation_controller.dart';
 import 'package:uzyio/controller/video_controller/video_controller.dart';
 
@@ -29,5 +30,12 @@ class MyCreationBindings implements Bindings {
   @override
   void dependencies() {
     Get.put(MyCreationController());
+  }
+}
+
+class FeedBindings implements Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FeedController());
   }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
+import 'package:uzyio/core/bindings/bindings.dart';
 import 'package:uzyio/view/screens/feed/feed_page.dart';
 import 'package:uzyio/view/screens/home/home.dart';
 import 'package:uzyio/view/screens/home/view_images.dart';
 import 'package:uzyio/view/screens/generate_content/text_to_image.dart';
 import 'package:uzyio/view/screens/generate_content/text_to_video.dart';
+import 'package:uzyio/view/screens/reward/all_reward_page.dart';
+import 'package:uzyio/view/screens/reward/reward_detail.dart';
+import 'package:uzyio/view/screens/reward/reward_home.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 
 // ignore: must_be_immutable
@@ -20,6 +24,9 @@ class MyNavBar extends StatefulWidget {
 class _MyNavBarState extends State<MyNavBar> {
   //int _selectedIndex = 0;
   void _onItemTapped(int index) {
+    if (widget.selectedIndex == 3) {
+      FeedBindings().dependencies();
+    }
     setState(() {
       widget.selectedIndex = index;
     });
@@ -31,7 +38,10 @@ class _MyNavBarState extends State<MyNavBar> {
     Homepage(),
     // VideoImagePage(),
     FeedPage(),
-    ViewPublicContent(),
+    // AllRewardPage(),
+    // RewardHomePage(),
+    RewardDetailsPage(),
+    // ViewPublicContent(),
     // MarketPage(),
     // ClubeHousePage(),
     // SavedPage(),
