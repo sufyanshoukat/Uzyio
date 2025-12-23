@@ -1,4 +1,4 @@
-package com.example.uzyio
+package com.uzyio.app
 
 import io.flutter.embedding.android.FlutterActivity
 

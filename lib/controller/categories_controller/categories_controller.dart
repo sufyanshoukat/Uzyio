@@ -5,17 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/end_points.dart';
 import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/core/bindings/bindings.dart';
 import 'package:uzyio/core/common/global_instance.dart';
+import 'package:uzyio/core/utils/snackbars.dart';
 import 'package:uzyio/model/categories/categoies_list_model.dart';
 import 'package:uzyio/model/categories/category_template_model.dart';
 import 'package:uzyio/model/categories/see_all_template_model.dart';
 import 'package:uzyio/model/categories/single_template_mode.dart';
 import 'package:uzyio/model/categories/slider_model.dart';
-import 'package:uzyio/view/screens/generate_content/generated_style.dart';
+import 'package:uzyio/view/screens/generate_content/template_generated_style.dart';
+import 'package:uzyio/view/screens/generate_content/image_generation_result.dart';
+import 'package:uzyio/view/screens/generate_content/video_generation_result.dart';
+import 'package:uzyio/view/screens/home/display_content.dart';
 
 class CategoriesController extends GetxController {
   // Slider
@@ -45,6 +50,9 @@ class CategoriesController extends GetxController {
 
   List<SliderData> sliderList = <SliderData>[];
   RxBool isSliderLoading = false.obs;
+
+  TextEditingController textToImageController = TextEditingController();
+  RxBool isTextToImageLoading = false.obs;
 
   // LIST CATEGORIES
 
@@ -240,6 +248,92 @@ class CategoriesController extends GetxController {
   //   }
   // }
 
+  // Future<void> createVideo({
+  //   required String endPoint,
+  //   required String image,
+  //   required String prompt,
+  // }) async {
+  //   try {
+  //     showVideoGenerationLoadingDialog();
+  //     // Create FormData request
+  //     var request = http.MultipartRequest('POST', Uri.parse(createVideoURL));
+
+  //     // Add form fields
+  //     request.fields['endpoint'] = endPoint;
+  //     request.fields['prompt'] = prompt;
+
+  //     // Add image file with proper content type
+  //     if (image.isNotEmpty) {
+  //       // Get file extension to determine MIME type
+  //       String extension = image.split('.').last.toLowerCase();
+  //       String mimeType;
+
+  //       switch (extension) {
+  //         case 'jpg':
+  //         case 'jpeg':
+  //           mimeType = 'image/jpeg';
+  //           break;
+  //         case 'png':
+  //           mimeType = 'image/png';
+  //           break;
+  //         case 'gif':
+  //           mimeType = 'image/gif';
+  //           break;
+  //         case 'webp':
+  //           mimeType = 'image/webp';
+  //           break;
+  //         default:
+  //           mimeType = 'image/jpeg'; // Default fallback
+  //       }
+
+  //       request.files.add(
+  //         await http.MultipartFile.fromPath(
+  //           'image',
+  //           image,
+  //           contentType: http.MediaType.parse(
+  //             mimeType,
+  //           ), // Explicitly set MIME type
+  //         ),
+  //       );
+  //     }
+
+  //     // Add authorization header if needed
+  //     // request.headers['Authorization'] = 'Bearer YOUR_TOKEN';
+
+  //     log("📤 Sending request to: ${request.url}");
+  //     log("📤 Fields: ${request.fields}");
+  //     log("📤 Image path: $image");
+
+  //     // Send request
+  //     var streamedResponse = await request.send();
+  //     var response = await http.Response.fromStream(streamedResponse);
+
+  //     log("📥 Status Code: ${response.statusCode}");
+  //     log("📥 Response: ${response.body}");
+
+  //     if (response.statusCode == 200) {
+  //       final jsonResponse = json.decode(response.body);
+  //       String signedUrl = jsonResponse['data']['video']['signedUrl'] ?? '';
+  //       log("✅ Video URL: $signedUrl");
+
+  //       log("✅ Create Video API Successfully hit");
+  //       hideLoadingDialog();
+  //       clearFields();
+  //       Get.to(
+  //         () => GeneratedStylePage(videoUrl: signedUrl),
+  //         binding: VideoBindings(),
+  //       );
+  //     } else {
+  //       log("❌ API Error: ${response.statusCode} - ${response.body}");
+  //     }
+
+  //     hideLoadingDialog();
+  //   } catch (e) {
+  //     hideLoadingDialog();
+  //     log("❌ Error while hitting Create-Video API: $e");
+  //   }
+  // }
+
   Future<void> createVideo({
     required String endPoint,
     required String image,
@@ -247,6 +341,7 @@ class CategoriesController extends GetxController {
   }) async {
     try {
       showVideoGenerationLoadingDialog();
+
       // Create FormData request
       var request = http.MultipartRequest('POST', Uri.parse(createVideoURL));
 
@@ -256,7 +351,6 @@ class CategoriesController extends GetxController {
 
       // Add image file with proper content type
       if (image.isNotEmpty) {
-        // Get file extension to determine MIME type
         String extension = image.split('.').last.toLowerCase();
         String mimeType;
 
@@ -275,26 +369,27 @@ class CategoriesController extends GetxController {
             mimeType = 'image/webp';
             break;
           default:
-            mimeType = 'image/jpeg'; // Default fallback
+            mimeType = 'image/jpeg';
         }
 
         request.files.add(
           await http.MultipartFile.fromPath(
             'image',
             image,
-            contentType: http.MediaType.parse(
-              mimeType,
-            ), // Explicitly set MIME type
+            contentType: http.MediaType.parse(mimeType),
           ),
         );
       }
 
-      // Add authorization header if needed
-      // request.headers['Authorization'] = 'Bearer YOUR_TOKEN';
+      // 👉 ADD TOKEN HERE
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('user_token');
+      request.headers['Authorization'] = 'Bearer $token';
 
       log("📤 Sending request to: ${request.url}");
       log("📤 Fields: ${request.fields}");
       log("📤 Image path: $image");
+      log("📤 Token: $token");
 
       // Send request
       var streamedResponse = await request.send();
@@ -306,17 +401,27 @@ class CategoriesController extends GetxController {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         String signedUrl = jsonResponse['data']['video']['signedUrl'] ?? '';
-        log("✅ Video URL: $signedUrl");
 
-        log("✅ Create Video API Successfully hit");
+        log("✅ Video URL: $signedUrl");
         hideLoadingDialog();
         clearFields();
+
         Get.to(
-          () => GeneratedStylePage(videoUrl: signedUrl),
+          () => TemplateGeneratedStylePage(videoUrl: signedUrl),
           binding: VideoBindings(),
         );
+
+        pickedImageFile.value = null;
       } else {
-        log("❌ API Error: ${response.statusCode} - ${response.body}");
+        var body = json.decode(response.body);
+        String message = body['message'];
+        CustomSnackBars.instance.showFailureSnackbar(
+          title: "Failed",
+          message: message,
+        );
+        log("❌ API Error: ${response.statusCode} - $message");
+
+        // Get.snackbar("", message)
       }
 
       hideLoadingDialog();
@@ -414,6 +519,67 @@ class CategoriesController extends GetxController {
     );
   }
 
+  // Future<void> downloadGeneratedImage({required String imageUrl}) async {
+  //   try {
+  //     log("⬇️ Download started");
+
+  //     showVideoGenerationLoadingDialog(
+  //       title: "Downloading image...\nPlease wait",
+  //     );
+
+  //     // ✅ Ask storage permission
+  //     final status = await Permission.storage.request();
+  //     if (!status.isGranted) {
+  //       hideLoadingDialog();
+  //       Get.snackbar("Permission Denied", "Storage permission is required");
+  //       return;
+  //     }
+
+  //     // ✅ Create Dio instance
+  //     // final dio = Dio();
+
+  //     // ✅ Get download directory
+  //     final directory = await getExternalStorageDirectory();
+  //     if (directory == null) {
+  //       hideLoadingDialog();
+  //       log("❌ Directory not found");
+  //       return;
+  //     }
+
+  //     final downloadPath =
+  //         "${directory.path}/generated_image_${DateTime.now().millisecondsSinceEpoch}.png";
+
+  //     // ✅ Download image
+  //     // await dio.download(
+  //     //   imageUrl,
+  //     //   downloadPath,
+  //     //   onReceiveProgress: (received, total) {
+  //     //     if (total != -1) {
+  //     //       log("📥 ${(received / total * 100).toStringAsFixed(0)}%");
+  //     //     }
+  //     //   },
+  //     // );
+
+  //     hideLoadingDialog();
+
+  //     log("✅ Image saved at: $downloadPath");
+
+  //     Get.snackbar(
+  //       "Download Complete",
+  //       "Image saved successfully",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //     );
+  //   } catch (e) {
+  //     hideLoadingDialog();
+  //     log("❌ Download error: $e");
+  //     Get.snackbar(
+  //       "Download Failed",
+  //       e.toString(),
+  //       snackPosition: SnackPosition.BOTTOM,
+  //     );
+  //   }
+  // }
+
   void showDownloadProgressDialog() {
     Get.dialog(
       Dialog(
@@ -509,7 +675,169 @@ class CategoriesController extends GetxController {
     });
   }
 
-  // ON INIT LOADS
+  // --------- TEXT TO IMAGE ---------
+
+  Future<void> getTextToImage({required String promt}) async {
+    try {
+      log("IMAGE TO TEXT API Hit");
+
+      showVideoGenerationLoadingDialog(
+        title: "Please wait, Image is generating\nDo not skip.",
+      );
+
+      final response = await apiService.post(
+        getTextToImageAPI,
+        {'prompt': promt},
+        false,
+        showResult: false,
+        // successCode: 200,
+      );
+
+      // ✅ CLOSE dialog BEFORE navigation
+      hideLoadingDialog();
+
+      if (response == null) {
+        return;
+      }
+
+      final data = response['data'];
+      final generatedImageURL = data?['image']?['url'];
+
+      if (generatedImageURL == null || generatedImageURL.isEmpty) {
+        log("❌ Image URL not found");
+        return;
+      }
+
+      log("✅ URL: $generatedImageURL");
+
+      // ✅ NOW navigate
+      Get.to(() => ImageGenerationResultPage(imageURL: generatedImageURL));
+    } catch (e) {
+      hideLoadingDialog();
+      log("❌ Error while fetching Text-To-Image API: $e");
+    }
+  }
+
+  // --------- TEXT TO Video ---------
+
+  Future<void> getTextToVideo({required String promt}) async {
+    try {
+      showVideoGenerationLoadingDialog(
+        title: "Please wait, Video is generating\nDo not skip.",
+      );
+
+      final body = {'prompt': promt, 'negativePrompt': 'ugly'};
+
+      final response = await apiService.post(
+        postTextToVideoAPI,
+        body,
+        false,
+        showResult: true,
+        successCode: 200,
+        duration: 180,
+      );
+
+      hideLoadingDialog();
+
+      if (response == null) {
+        log("❌ Response is null (likely timeout)");
+        return;
+      }
+
+      // Get video URL directly
+      final videoURL = response['data']?['video']?['url'];
+
+      if (videoURL == null || videoURL.isEmpty) {
+        log("❌ Video URL not found");
+        return;
+      }
+
+      log("✅ Video ready: $videoURL");
+
+      // Navigate to display page
+      Get.to(
+        () => VideoGenerationResultPage(isVideo: true, videoUrl: videoURL),
+        binding: VideoBindings(),
+      );
+    } catch (e) {
+      hideLoadingDialog();
+      log("❌ Error in getTextToVideo: $e");
+    }
+  }
+
+  // Future<void> _pollVideoStatus(String taskId) async {
+  //   Timer.periodic(Duration(seconds: 6), (timer) async {
+  //     try {
+  //       final response = await apiService.get(
+  //         "$baseUrl/api/user/text-to-video/status/$taskId",
+  //         true,
+  //       );
+
+  //       if (response == null) return;
+
+  //       final status = response['data']?['status'];
+  //       log("⏳ Status: $status");
+
+  //       if (status == 'completed') {
+  //         timer.cancel();
+  //         final videoURL = response['data']?['video']?['url'];
+  //         if (videoURL != null) {
+  //           Get.to(() => DisplayContentPage(isVideo: true, videoUrl: videoURL));
+  //           log("✅ Video ready: $videoURL");
+  //           // Navigate or download video
+  //         }
+  //       }
+
+  //       if (status == 'failed') {
+  //         timer.cancel();
+  //         log("❌ Video generation failed");
+  //       }
+  //     } catch (e) {
+  //       log("❌ Polling error: $e");
+  //     }
+  //   });
+  // }
+
+  // IS-LIKE
+
+  Future<void> likedMethod({
+    required String templateID,
+    required String userID,
+  }) async {
+    try {
+      log("Like API Hit");
+
+      final response = await apiService.post(
+        isLikeAPI,
+        {'template_id': templateID, "user_id": userID},
+        false,
+        showResult: false,
+        successCode: 200,
+      );
+
+      if (response == null) {
+        return;
+      }
+
+      final data = response['success'];
+      final message = response['message'];
+      if (data == true) {
+        displayToast(msg: "$message");
+        log("❌ Image URL not found");
+      }
+
+      // if (generatedImageURL == null || generatedImageURL.isEmpty) {
+      //   log("❌ Image URL not found");
+      //   return;
+      // }
+
+      log("✅ Template liked successfully");
+    } catch (e) {
+      hideLoadingDialog();
+      log("❌ Error Template liked API Failed: $e");
+    }
+  }
+
   @override
   void onInit() async {
     super.onInit();

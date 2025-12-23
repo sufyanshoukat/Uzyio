@@ -322,27 +322,67 @@ class APIService extends GetxService {
       if (response.statusCode == successCode) {
         return jsonDecode(response.body);
       } else {
-        log(
-          'POST API call failed with status code ($url): ${response.statusCode}',
+        log('POST API failed ($url): ${response.statusCode}');
+        log('RAW BODY: ${response.body}');
+
+        Map<String, dynamic> responseMap = {};
+
+        try {
+          responseMap = jsonDecode(response.body);
+        } catch (e) {
+          responseMap = {
+            "success": false,
+            "message": "Invalid error response",
+            "raw": response.body,
+          };
+        }
+
+        final errorMessage =
+            responseMap['message'] ??
+            responseMap['error']?['error'] ??
+            "Something went wrong";
+
+        CustomSnackBars.instance.showFailureSnackbar(
+          title: "Error",
+          message: errorMessage,
         );
 
-        // ErrorResponse res = ErrorResponse.fromJson(jsonDecode(response.body));
-
-        // CustomSnackBar.error(res.message!.error!.first.toString());
-        Map<String, dynamic> responseMap = jsonDecode(response.body);
-        if (responseMap.containsKey('error')) {
-          CustomSnackBars.instance.showFailureSnackbar(
-            title: 'Error',
-            message: responseMap['error'],
-          );
-        } else if (responseMap.containsKey('message')) {
-          CustomSnackBars.instance.showFailureSnackbar(
-            title: 'Error',
-            message: responseMap['message'],
-          );
-        }
-        return null;
+        return responseMap;
       }
+
+      // else {
+      //   log(
+      //     'POST API call failed with status code ($url): ${response.statusCode}',
+      //   );
+
+      //   // ErrorResponse res = ErrorResponse.fromJson(jsonDecode(response.body));
+
+      //   // CustomSnackBar.error(res.message!.error!.first.toString());
+      //   Map<String, dynamic> responseMap = jsonDecode(response.body);
+      //   if (responseMap.containsKey('error')) {
+      //     CustomSnackBars.instance.showFailureSnackbar(
+      //       title: 'Error',
+      //       message: responseMap['error'],
+      //     );
+      //     log('-----------------------------------------');
+      //     log('1. Erorr Body: ($responseMap)');
+      //     log('-----------------------------------------');
+      //   } else if (responseMap.containsKey('message')) {
+      //     CustomSnackBars.instance.showFailureSnackbar(
+      //       title: 'Error',
+      //       message: responseMap['message'],
+      //     );
+      //     log('-----------------------------------------');
+      //     log('1. Erorr Body: ($responseMap)');
+      //     log('-----------------------------------------');
+      //   }
+
+      //   log('-----------------------------------------');
+      //   log('Erorr Body: ($responseMap)');
+      //   log('-----------------------------------------');
+
+      //   return responseMap;
+      // }
     } on SocketException {
       log('Error Alert on Socket Exception ($url)');
 

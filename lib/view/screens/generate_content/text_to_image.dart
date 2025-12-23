@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
-import 'package:uzyio/view/screens/generate_content/generated_style.dart';
+import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/view/widget/custom_textfield.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/my_button.dart';
@@ -19,26 +18,34 @@ class TextToImagePage extends StatefulWidget {
 }
 
 class _TextToImagePageState extends State<TextToImagePage> {
+  final ctrl = Get.find<CategoriesController>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    ctrl.textToImageController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: AppStyling().background(image: Assets.imagesBkImageSimple),
       child: Scaffold(
         backgroundColor: kTransperentColor,
-        appBar: GeneralAppBar2(title: "Create Style"),
+        appBar: GeneralAppBar2(title: "Create Style", isBackButton: false),
         body: Padding(
           padding: AppSizes.DEFAULT,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Spacer(),
-              MyButton(
-                onTap: () {},
-                isGradientBackground: false,
-                buttonText: "Change Image To Animated",
-                backgroundColor: kWhiteColor,
-                fontColor: kBlackColor,
-              ),
+              // MyButton(
+              //   onTap: () {},
+              //   isGradientBackground: false,
+              //   buttonText: "Change Image To Animated",
+              //   backgroundColor: kWhiteColor,
+              //   fontColor: kBlackColor,
+              // ),
               Spacer(),
 
               MyText(
@@ -49,6 +56,7 @@ class _TextToImagePageState extends State<TextToImagePage> {
               ),
 
               CustomTextField(
+                controller: ctrl.textToImageController,
                 focusedBorderColor: kSecondaryColor,
                 outlineBorderColor: kTransperentColor,
                 backgroundColor: Color(0xff2C2C2C),
@@ -65,7 +73,7 @@ class _TextToImagePageState extends State<TextToImagePage> {
                 mTop: 32,
                 mBottom: 18,
                 onTap: () {
-                  Get.to(() => GeneratedStylePageDummyPage());
+                  ctrl.getTextToImage(promt: ctrl.textToImageController.text);
                 },
                 isGradientBackground: true,
                 buttonText: "Generate Image",

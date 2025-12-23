@@ -9,7 +9,7 @@ class MyCreationController extends GetxController {
   RxList<MyCreationModel> myCreation = <MyCreationModel>[].obs;
   RxBool isLoading = false.obs;
 
-  Future<void> getSeeAllTemplate({required String id}) async {
+  Future<void> getMyCreation({required String id}) async {
     try {
       log("📡 My Creation API Called");
       isLoading(true);
@@ -41,7 +41,7 @@ class MyCreationController extends GetxController {
 
   @override
   void onInit() {
-    getSeeAllTemplate(id: UserService.instance.userModel.value.id.toString());
+    getMyCreation(id: UserService.instance.userModel.value.id.toString());
     super.onInit();
   }
 }

@@ -5,7 +5,7 @@ import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/constants/loading_animation.dart';
-import 'package:uzyio/view/screens/generate_content/generated_style.dart';
+import 'package:uzyio/view/screens/generate_content/image_generation_result.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/my_button.dart';
 import 'package:uzyio/view/widget/my_round_button.dart';
@@ -58,7 +58,7 @@ class _ConvertImagePageState extends State<ConvertImagePage> {
 
                         await Future.delayed(Duration(seconds: 5), () {
                           Get.to(
-                            () => GeneratedStylePageDummyPage(),
+                            () => ImageGenerationResultPage(),
                             duration: Duration(milliseconds: 600),
                             transition: Transition.rightToLeft,
                           );

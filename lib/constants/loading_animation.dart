@@ -18,7 +18,7 @@ void showLoadingDialog() {
   );
 }
 
-void showVideoGenerationLoadingDialog() {
+void showVideoGenerationLoadingDialog({String? title}) {
   Get.dialog(
     Dialog(
       backgroundColor: kDarkGrey1Color,
@@ -38,7 +38,7 @@ void showVideoGenerationLoadingDialog() {
 
             // Message at bottom
             Text(
-              'Please wait, video is generating\nDo not skip',
+              title ?? 'Please wait, video is generating\nDo not skip',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,

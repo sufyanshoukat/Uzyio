@@ -52,7 +52,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String? title, profileImage;
+  final String? title, profileImage, coins;
   final VoidCallback onDrawerTap;
 
   HomeAppBar({
@@ -60,6 +60,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.profileImage,
     required this.onDrawerTap,
+    this.coins = '',
   });
   Size get preferredSize => Size.fromHeight(80);
 
@@ -80,40 +81,48 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           SizedBox(width: 20),
           InkWell(
             onTap: onDrawerTap,
-            child: CommonImageView(
-              url: profileImage,
-              height: 41,
-              width: 41,
-              radius: 100,
+            child: Row(
+              children: [
+                CommonImageView(
+                  url: profileImage,
+                  height: 41,
+                  width: 41,
+                  radius: 100,
+                ),
+                SizedBox(width: 12),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MyText(
+                      text: title ?? "Balance",
+                      size: 18,
+                      weight: FontWeight.w500,
+                      color:
+                          (ctrl.isDarkTheme.value) ? kWhiteColor : kBlackColor,
+                    ),
+                    Row(
+                      children: [
+                        CommonImageView(
+                          height: 15,
+                          imagePath: Assets.imagesCoinsIcon,
+                        ),
+                        MyText(
+                          paddingLeft: 5,
+                          text: "$coins coins",
+                          size: 14,
+                          weight: FontWeight.w500,
+                          color:
+                              (ctrl.isDarkTheme.value)
+                                  ? kWhiteColor
+                                  : kBlackColor,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 12),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MyText(
-                text: title ?? "Balance",
-                size: 18,
-                weight: FontWeight.w500,
-                color: (ctrl.isDarkTheme.value) ? kWhiteColor : kBlackColor,
-              ),
-              Row(
-                children: [
-                  CommonImageView(
-                    height: 15,
-                    imagePath: Assets.imagesCoinsIcon,
-                  ),
-                  MyText(
-                    paddingLeft: 5,
-                    text: "50 points",
-                    size: 14,
-                    weight: FontWeight.w500,
-                    color: (ctrl.isDarkTheme.value) ? kWhiteColor : kBlackColor,
-                  ),
-                ],
-              ),
-            ],
           ),
           Spacer(),
 

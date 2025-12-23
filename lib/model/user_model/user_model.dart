@@ -2,9 +2,12 @@ class UserModel {
   String? id;
   String? name;
   String? email;
+  String? password;
   String? profile;
   String? role;
   String? status;
+  int? credits;
+  int? coins;
   bool? isActive;
   String? fcmToken;
   String? createdAt;
@@ -14,9 +17,12 @@ class UserModel {
     this.id,
     this.name,
     this.email,
+    this.password,
     this.profile,
     this.role,
     this.status,
+    this.credits,
+    this.coins,
     this.isActive,
     this.fcmToken,
     this.createdAt,
@@ -27,24 +33,25 @@ class UserModel {
     if (json == null) return UserModel();
 
     return UserModel(
-      id: json.containsKey('id') ? json['id']?.toString() : null,
-      name: json.containsKey('name') ? json['name']?.toString() : null,
-      email: json.containsKey('email') ? json['email']?.toString() : null,
-      profile: json.containsKey('profile') ? json['profile']?.toString() : null,
-      role: json.containsKey('role') ? json['role']?.toString() : null,
-      status: json.containsKey('status') ? json['status']?.toString() : null,
-      isActive:
-          json.containsKey('is_active') ? json['is_active'] as bool? : null,
-      fcmToken:
-          json.containsKey('fcm_token') ? json['fcm_token']?.toString() : null,
-      createdAt:
-          json.containsKey('created_at')
-              ? json['created_at']?.toString()
-              : null,
-      updatedAt:
-          json.containsKey('updated_at')
-              ? json['updated_at']?.toString()
-              : null,
+      id: json['id']?.toString(),
+      name: json['name']?.toString(),
+      email: json['email']?.toString(),
+      password: json['password']?.toString(),
+      profile: json['profile']?.toString(),
+      role: json['role']?.toString(),
+      status: json['status']?.toString(),
+      credits:
+          json['credits'] is int
+              ? json['credits']
+              : int.tryParse(json['credits']?.toString() ?? "0"),
+      coins:
+          json['coins'] is int
+              ? json['coins']
+              : int.tryParse(json['coins']?.toString() ?? "0"),
+      isActive: json['is_active'] as bool?,
+      fcmToken: json['fcm_token']?.toString(),
+      createdAt: json['created_at']?.toString(),
+      updatedAt: json['updated_at']?.toString(),
     );
   }
 
@@ -53,9 +60,12 @@ class UserModel {
       "id": id,
       "name": name,
       "email": email,
+      "password": password,
       "profile": profile,
       "role": role,
       "status": status,
+      "credits": credits,
+      "coins": coins,
       "is_active": isActive,
       "fcm_token": fcmToken,
       "created_at": createdAt,

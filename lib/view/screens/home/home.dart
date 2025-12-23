@@ -16,6 +16,7 @@ import 'package:uzyio/view/screens/my_creations/my_creations.dart';
 import 'package:uzyio/view/screens/settings/my_profile.dart';
 import 'package:uzyio/view/screens/settings/refer.dart';
 import 'package:uzyio/view/screens/settings/setting.dart';
+import 'package:uzyio/view/widget/animation_widget.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/custom_textfield.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
@@ -57,6 +58,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    log("UserID: ${UserService.instance.userModel.value.id}");
     return Obx(
       () => Container(
         decoration: AppStyling().background(
@@ -74,6 +76,8 @@ class _HomepageState extends State<Homepage> {
           appBar: HomeAppBar(
             profileImage: UserService.instance.userModel.value.profile,
             title: "${UserService.instance.userModel.value.name}",
+            coins: "${UserService.instance.userModel.value.credits}",
+
             onDrawerTap: () {
               _scaffoldKey.currentState?.openDrawer();
             },
@@ -424,7 +428,11 @@ class _HomepageState extends State<Homepage> {
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 30),
-                child: MySearchBar(),
+                child: FadeSlideTransition(
+                  delay: 300,
+                  beginOffset: Offset(-0.5, 0),
+                  child: MySearchBar(),
+                ),
               ),
 
               SingleChildScrollView(
@@ -445,49 +453,52 @@ class _HomepageState extends State<Homepage> {
                       ),
                       margin: EdgeInsets.only(bottom: 5, left: 10, right: 10),
 
-                      child: DrawerTile(
-                        icon: drawerItems[index].icon,
-                        title: drawerItems[index].text,
-                        isCardSelected:
-                            (selectedDrawerIndex == index) ? true : false,
+                      child: FadeSlideTransition(
+                        delay: 70 + index * 100,
+                        child: DrawerTile(
+                          icon: drawerItems[index].icon,
+                          title: drawerItems[index].text,
+                          isCardSelected:
+                              (selectedDrawerIndex == index) ? true : false,
 
-                        paddingBottom: 8,
+                          paddingBottom: 8,
 
-                        onTap: () {
-                          selectedDrawerIndex = index;
-                          setState(() {});
+                          onTap: () {
+                            selectedDrawerIndex = index;
+                            setState(() {});
 
-                          switch (index) {
-                            case 0:
-                              Get.to(() => MyProfile());
-                              break;
-                            case 1:
-                              Get.to(
-                                () => MyCreationPage(),
-                                binding: MyCreationBindings(),
-                              );
-                              break;
-                            case 2:
-                              break;
-                            case 3:
-                              Get.to(() => ReferPage());
-                              break;
-                            case 4:
-                              break;
-                            // case 5:
-                            //   Get.to(() => Settings(), binding: AuthBindings());
-                            //   break;
+                            switch (index) {
+                              case 0:
+                                Get.to(() => MyProfile());
+                                break;
+                              case 1:
+                                Get.to(
+                                  () => MyCreationPage(),
+                                  binding: MyCreationBindings(),
+                                );
+                                break;
+                              case 2:
+                                break;
+                              case 3:
+                                Get.to(() => ReferPage());
+                                break;
+                              case 4:
+                                break;
+                              // case 5:
+                              //   Get.to(() => Settings(), binding: AuthBindings());
+                              //   break;
 
-                            default:
-                              log("Updated");
-                              Get.to(
-                                () => Settings(),
-                                transition: Transition.rightToLeft,
-                                binding: AuthBindings(),
-                              );
-                              break;
-                          }
-                        },
+                              default:
+                                log("Updated");
+                                Get.to(
+                                  () => Settings(),
+                                  transition: Transition.rightToLeft,
+                                  binding: AuthBindings(),
+                                );
+                                break;
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),

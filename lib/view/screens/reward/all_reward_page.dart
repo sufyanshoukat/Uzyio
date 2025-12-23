@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
+import 'package:uzyio/controller/reward_controller.dart/reward_contoller.dart';
+import 'package:uzyio/model/daily_rewards/daily_rewards.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/my_text_widget.dart';
 
@@ -15,125 +20,161 @@ class AllRewardPage extends StatefulWidget {
 }
 
 class _AllRewardPageState extends State<AllRewardPage> {
+  final ctrl = Get.put(RewardController());
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBlackColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: AppSizes.DEFAULT,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: kPrimaryColor,
-                ),
-              ),
-              // TOTAL BALANCE
-              _TotalBalanceCard(),
+    CoinRewardResponseModel model = UserService.instance.dailyRewards.value;
 
-              // DAILY LOGIN BONUS
-              _DailyBonusCard(),
+    return Obx(
+      () => Scaffold(
+        backgroundColor: kBlackColor,
+        appBar: AppBar(
+          backgroundColor: kTransperentColor,
+          surfaceTintColor: kTransperentColor,
+          leading: InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(Icons.arrow_back_ios_new_rounded, color: kPrimaryColor),
+          ),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: AppSizes.DEFAULT,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // TOTAL BALANCE
+                Obx(() {
+                  final rewards = UserService.instance.dailyRewards.value;
+                  final streak = rewards.streakBonus;
 
-              // STREAK PROGRESS
-              _StreakProgressCard(),
+                  return _TotalBalanceCard(
+                    coins: (rewards.currentCoins ?? 0).toString(),
+                    currentStreak: (streak?.currentStreak ?? 0).toString(),
+                    totalDaysOfStreak: (streak?.requiredStreak ?? 0).toString(),
+                  );
+                }),
 
-              // EARN COINS
-              MyText(
-                paddingTop: 22,
-                paddingBottom: 12,
-                text: "Earn Coins",
-                size: 16,
-                weight: FontWeight.w400,
-                color: kPrimaryColor.withValues(alpha: 0.8),
-              ),
+                // DAILY LOGIN BONUS
+                _DailyBonusCard(
+                  subtitle: model.dailyLogin?.description,
+                  btnText: "${model.dailyLogin?.coins}",
+                  isRewardClaims:
+                      (model.dailyLogin?.claimedToday == false) ? true : false,
+                  onTap: () {
+                    // log("${model.dailyLogin?.claimedToday}");
 
-              ...List.generate(rewardItems.length, (index) {
-                return _AllReward(
-                  title: rewardItems[index].title,
-                  subTitle: rewardItems[index].subTitle,
-                  coins: rewardItems[index].coins,
-                  icon: rewardItems[index].icon,
-                  haveGreenCard: rewardItems[index].haveGreenCard,
-                );
-              }),
-
-              // RECENT ACTIVITY
-              MyText(
-                paddingTop: 40,
-                paddingBottom: 12,
-                text: "Recent Activity",
-                size: 16,
-                weight: FontWeight.w400,
-                color: kPrimaryColor.withValues(alpha: 0.8),
-              ),
-
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: AppStyling().myDecoration(
-                  color: kDarkGrey1Color,
-                  borderColor: kPrimaryColor.withValues(alpha: 0.6),
+                    UserService.instance.getDailyRewardTrackStreaks();
+                  },
                 ),
 
-                child: Column(
-                  children: List.generate(3, (index) {
-                    List<RecentActivityModel> items = [
-                      RecentActivityModel(
-                        title: "Daily Login Bonus",
-                        subTitle: "Today",
-                        coins: "+20",
-                      ),
-                      RecentActivityModel(
-                        title: "Content Shared",
-                        subTitle: "2 hours ago",
-                        coins: "+10",
-                      ),
-                      RecentActivityModel(
-                        title: "Generated Image",
-                        subTitle: "Yesterday",
-                        coins: "+5",
-                      ),
-                    ];
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: (index < 2) ? 20 : 0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MyText(
-                                  text: items[index].title,
-                                  size: 16,
-                                  weight: FontWeight.w400,
-                                  color: kPrimaryColor.withValues(alpha: 0.8),
-                                ),
-                                MyText(
-                                  text: items[index].subTitle,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                  color: kPrimaryColor.withValues(alpha: 0.5),
-                                ),
-                              ],
-                            ),
-                          ),
-                          MyText(
-                            text: items[index].coins,
-                            size: 14,
-                            weight: FontWeight.w400,
-                            color: Color(0xff00A63E),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                // STREAK PROGRESS
+                _StreakProgressCard(
+                  description: model.streakBonus?.description,
+                  currentStreak:
+                      (model.streakBonus?.currentStreak != null)
+                          ? model.streakBonus!.currentStreak!.toInt()
+                          : 0,
                 ),
-              ),
-            ],
+
+                // EARN COINS
+                MyText(
+                  paddingTop: 22,
+                  paddingBottom: 12,
+                  text: "Earn Coins",
+                  size: 16,
+                  weight: FontWeight.w400,
+                  color: kPrimaryColor.withValues(alpha: 0.8),
+                ),
+
+                ...List.generate(7, (index) {
+                  return _AllReward(
+                    title: ctrl.coinsList[index].label.toString(),
+                    subTitle: rewardItems[index].subTitle,
+                    coins: ctrl.coinsList[index].value.toString(),
+                    icon: rewardItems[index].icon,
+                    haveGreenCard: rewardItems[index].haveGreenCard,
+                  );
+                }),
+
+                SizedBox(height: 40),
+
+                // // RECENT ACTIVITY
+                // MyText(
+                //   paddingTop: 40,
+                //   paddingBottom: 12,
+                //   text: "Recent Activity",
+                //   size: 16,
+                //   weight: FontWeight.w400,
+                //   color: kPrimaryColor.withValues(alpha: 0.8),
+                // ),
+
+                // Container(
+                //   margin: EdgeInsets.only(bottom: 20),
+                //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                //   decoration: AppStyling().myDecoration(
+                //     color: kDarkGrey1Color,
+                //     borderColor: kPrimaryColor.withValues(alpha: 0.6),
+                //   ),
+
+                //   child: Column(
+                //     children: List.generate(3, (index) {
+                //       List<RecentActivityModel> items = [
+                //         RecentActivityModel(
+                //           title: "Daily Login Bonus",
+                //           subTitle: "Today",
+                //           coins: "+20",
+                //         ),
+                //         RecentActivityModel(
+                //           title: "Content Shared",
+                //           subTitle: "2 hours ago",
+                //           coins: "+10",
+                //         ),
+                //         RecentActivityModel(
+                //           title: "Generated Image",
+                //           subTitle: "Yesterday",
+                //           coins: "+5",
+                //         ),
+                //       ];
+                //       return Padding(
+                //         padding: EdgeInsets.only(bottom: (index < 2) ? 20 : 0),
+                //         child: Row(
+                //           children: [
+                //             Expanded(
+                //               child: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.start,
+                //                 children: [
+                //                   MyText(
+                //                     text: items[index].title,
+                //                     size: 16,
+                //                     weight: FontWeight.w400,
+                //                     color: kPrimaryColor.withValues(alpha: 0.8),
+                //                   ),
+                //                   MyText(
+                //                     text: items[index].subTitle,
+                //                     size: 14,
+                //                     weight: FontWeight.w400,
+                //                     color: kPrimaryColor.withValues(alpha: 0.5),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //             MyText(
+                //               text: items[index].coins,
+                //               size: 14,
+                //               weight: FontWeight.w400,
+                //               color: Color(0xff00A63E),
+                //             ),
+                //           ],
+                //         ),
+                //       );
+                //     }),
+                //   ),
+                // ),
+              ],
+            ),
           ),
         ),
       ),
@@ -145,16 +186,16 @@ class _AllRewardPageState extends State<AllRewardPage> {
       icon: Assets.imagesRA,
       title: "Subscribe to Plan",
       subTitle: "Monthly recurring coins",
-      coins: "+50",
+      coins: "Ser",
       haveGreenCard: false,
     ),
-    RewardModel(
-      icon: Assets.imagesRB,
-      title: "Upgrade Plan",
-      subTitle: "One-time bonus",
-      coins: "+100",
-      haveGreenCard: false,
-    ),
+    // RewardModel(
+    //   icon: Assets.imagesRB,
+    //   title: "Upgrade Plan",
+    //   subTitle: "One-time bonus",
+    //   coins: "+100",
+    //   haveGreenCard: false,
+    // ),
     RewardModel(
       icon: Assets.imagesRC,
       title: "Refer a Friend",
@@ -183,13 +224,13 @@ class _AllRewardPageState extends State<AllRewardPage> {
       coins: "+5",
       haveGreenCard: false,
     ),
-    RewardModel(
-      icon: Assets.imagesRG,
-      title: "Premium Templates",
-      subTitle: "Generate premium content",
-      coins: "+10",
-      haveGreenCard: false,
-    ),
+    // RewardModel(
+    //   icon: Assets.imagesRG,
+    //   title: "Premium Templates",
+    //   subTitle: "Generate premium content",
+    //   coins: "+10",
+    //   haveGreenCard: false,
+    // ),
     RewardModel(
       icon: Assets.imagesRH,
       title: "Leave a Review",
@@ -314,7 +355,13 @@ class RewardModel {
 }
 
 class _StreakProgressCard extends StatelessWidget {
-  const _StreakProgressCard({super.key});
+  String? description;
+  int currentStreak;
+  _StreakProgressCard({
+    super.key,
+    required this.description,
+    required this.currentStreak,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -368,7 +415,7 @@ class _StreakProgressCard extends StatelessWidget {
                       height: 8,
                       decoration: AppStyling().myDecoration(
                         color:
-                            (index < 3)
+                            (index < currentStreak)
                                 ? kTertiaryColor
                                 : kPrimaryColor.withValues(alpha: 0.3),
                         borderColor: kTransperentColor,
@@ -382,7 +429,7 @@ class _StreakProgressCard extends StatelessWidget {
             MyText(
               paddingTop: 10,
               paddingBottom: 4,
-              text: "4 days - 3 more to unlock 100 coins!",
+              text: description ?? "4 days - 3 more to unlock 100 coins!",
               size: 14,
               weight: FontWeight.w400,
               color: kPrimaryColor.withValues(alpha: 0.8),
@@ -418,7 +465,14 @@ class _StreakProgressCard extends StatelessWidget {
 }
 
 class _TotalBalanceCard extends StatelessWidget {
-  const _TotalBalanceCard({super.key});
+  final String? coins;
+  final String currentStreak, totalDaysOfStreak;
+  const _TotalBalanceCard({
+    super.key,
+    required this.coins,
+    required this.currentStreak,
+    required this.totalDaysOfStreak,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -452,7 +506,7 @@ class _TotalBalanceCard extends StatelessWidget {
 
                   MyText(
                     paddingLeft: 10,
-                    text: "470",
+                    text: "$coins",
                     size: 36,
                     weight: FontWeight.w600,
                   ),
@@ -480,7 +534,11 @@ class _TotalBalanceCard extends StatelessWidget {
               children: [
                 CommonImageView(height: 20, imagePath: Assets.imagesStreakIcon),
                 MyText(text: "Streak", size: 14, weight: FontWeight.w600),
-                MyText(text: "4/7", size: 20, weight: FontWeight.w600),
+                MyText(
+                  text: "$currentStreak/$totalDaysOfStreak",
+                  size: 20,
+                  weight: FontWeight.w600,
+                ),
               ],
             ),
           ),
@@ -491,7 +549,17 @@ class _TotalBalanceCard extends StatelessWidget {
 }
 
 class _DailyBonusCard extends StatelessWidget {
-  const _DailyBonusCard({super.key});
+  final String? title, subtitle, btnText;
+  final VoidCallback? onTap;
+  final bool isRewardClaims;
+  const _DailyBonusCard({
+    super.key,
+    this.btnText,
+    this.subtitle,
+    this.title,
+    this.onTap,
+    this.isRewardClaims = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -516,7 +584,7 @@ class _DailyBonusCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MyText(
-                  text: "Daily Login Bonus",
+                  text: title ?? "Daily Login Bonus",
                   size: 14,
                   weight: FontWeight.w600,
                   color: kTertiaryColor,
@@ -526,6 +594,7 @@ class _DailyBonusCard extends StatelessWidget {
                   paddingTop: 5,
                   paddingBottom: 12,
                   text:
+                      subtitle ??
                       "Claim 20 coins every day. Log in 7 days in a row for 100 bonus coins!",
                   size: 14,
                   weight: FontWeight.w400,
@@ -535,12 +604,25 @@ class _DailyBonusCard extends StatelessWidget {
                 Container(
                   width: 152,
                   height: 40,
-                  decoration: AppStyling().gradientBK(),
-                  child: Center(
-                    child: MyText(
-                      text: "Claim 20 Coins",
-                      size: 14,
-                      weight: FontWeight.w400,
+                  decoration:
+                      isRewardClaims
+                          ? AppStyling().gradientBK()
+                          : AppStyling().myDecoration(color: kGreyTextColor),
+                  child: InkWell(
+                    onTap: onTap,
+                    child: Center(
+                      child: MyText(
+                        text:
+                            (isRewardClaims)
+                                ? "Claim $btnText Coins"
+                                : "Reward claimed!",
+                        size: 14,
+                        weight: FontWeight.w400,
+                        color:
+                            (isRewardClaims)
+                                ? kWhiteColor
+                                : kWhiteColor.withValues(alpha: 0.8),
+                      ),
                     ),
                   ),
                 ),

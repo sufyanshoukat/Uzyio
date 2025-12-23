@@ -50,6 +50,7 @@ class FeedController extends GetxController {
         /// Pagination update
         hasNextPage = body.pagination?.nextPage ?? false;
         log("✅ Loaded ${feedList.length} items. Has next page: $hasNextPage");
+        log("✅ Feed Video URL ${feedList[0].file}");
       } else {
         log("⚠️ Response is null");
       }

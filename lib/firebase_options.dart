@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBVzvUHwmdVNQVs1NrM_PqoMaIarHR2vHU',
-    appId: '1:580797207136:android:5c1feb0a56b5288ed3e905',
-    messagingSenderId: '580797207136',
-    projectId: 'uzyio-58f60',
-    storageBucket: 'uzyio-58f60.firebasestorage.app',
+    apiKey: 'AIzaSyBiUhszbajMsSLOb0RTqruruVLg5r_04aE',
+    appId: '1:326811643696:android:79e3443febd3bfa933e2f5',
+    messagingSenderId: '326811643696',
+    projectId: 'uzyio-7971d',
+    storageBucket: 'uzyio-7971d.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAt9npQxHQQRp6tD3oxykVlY3ofovrT_7M',
-    appId: '1:580797207136:ios:b3bd9fce33182892d3e905',
-    messagingSenderId: '580797207136',
-    projectId: 'uzyio-58f60',
-    storageBucket: 'uzyio-58f60.firebasestorage.app',
-    iosBundleId: 'com.example.uzyio',
+    apiKey: 'AIzaSyCT1YSGbnvch0UIRwkYfjxGoAIQkfgtAO8',
+    appId: '1:326811643696:ios:c66c6b3a3441b9ca33e2f5',
+    messagingSenderId: '326811643696',
+    projectId: 'uzyio-7971d',
+    storageBucket: 'uzyio-7971d.firebasestorage.app',
+    iosBundleId: 'com.uzyio.app',
   );
+
 }

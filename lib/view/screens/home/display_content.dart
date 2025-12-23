@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:uzyio/constants/end_points.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/controller/video_controller/video_controller.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/screens/generate_content/create_style.dart';
 import 'package:video_player/video_player.dart';
 import 'package:uzyio/constants/app_colors.dart';
@@ -347,35 +351,149 @@ class _DisplayContentPageState extends State<DisplayContentPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        SizedBox(
-                          height: 30,
-                          width: 40,
-                          child: LikeButton(
-                            circleColor: CircleColor(
-                              start: Color(0xff00ddff),
-                              end: Color(0xff0099cc),
-                            ),
-                            bubblesColor: BubblesColor(
-                              dotPrimaryColor: Colors.pink,
-                              dotSecondaryColor: Colors.white,
-                            ),
-                            likeBuilder: (bool isLiked) {
-                              return Icon(
-                                isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isLiked ? Colors.red : Colors.white,
-                                size: 28,
+                        Column(
+                          children: [
+                            Obx(() {
+                              final bool apiIsLiked =
+                                  _ctrl.singleTemplateData.value?.stats.isLiked
+                                      as bool;
+
+                              log(
+                                "Like API: ${_ctrl.singleTemplateData.value?.stats.isLiked}",
                               );
-                            },
-                          ),
+                              log(
+                                "Like API: ${_ctrl.singleTemplateData.value?.id}",
+                              );
+
+                              return SizedBox(
+                                height: 30,
+                                width: 40,
+                                child: LikeButton(
+                                  key: ValueKey(apiIsLiked), // ⭐ VERY IMPORTANT
+                                  isLiked: apiIsLiked,
+                                  circleColor: const CircleColor(
+                                    start: Color(0xff00ddff),
+                                    end: Color(0xff0099cc),
+                                  ),
+                                  bubblesColor: const BubblesColor(
+                                    dotPrimaryColor: Colors.pink,
+                                    dotSecondaryColor: Colors.white,
+                                  ),
+                                  likeBuilder: (bool isLiked) {
+                                    return Icon(
+                                      (isLikeAPI == true)
+                                          ? Icons.favorite
+                                          : (isLiked)
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color:
+                                          isLiked ? Colors.red : Colors.white,
+                                      size: 28,
+                                    );
+                                  },
+                                  onTap: (bool isLiked) async {
+                                    _ctrl.likedMethod(
+                                      templateID:
+                                          _ctrl.singleTemplateData.value!.id,
+                                      userID:
+                                          UserService
+                                              .instance
+                                              .userModel
+                                              .value
+                                              .id!,
+                                    );
+
+                                    // optimistic UI update
+                                    if (_ctrl.singleTemplateData.value?.id
+                                            .toString() !=
+                                        null) {
+                                      await _ctrl.getSingleTemplate(
+                                        templateID:
+                                            _ctrl.singleTemplateData.value!.id,
+                                      );
+                                    }
+
+                                    // _ctrl.singleTemplateData.update((val) {
+                                    //   val?.stats.isLiked = !isLiked;
+                                    // });
+
+                                    return !isLiked;
+                                  },
+                                ),
+                              );
+                            }),
+
+                            // SizedBox(
+                            //   height: 30,
+                            //   width: 40,
+                            //   child: LikeButton(
+                            //     isLiked:
+                            //         _ctrl
+                            //             .singleTemplateData
+                            //             .value
+                            //             ?.stats
+                            //             .isLiked ??
+                            //         false, // 👈 initial state from API
+                            //     circleColor: const CircleColor(
+                            //       start: Color(0xff00ddff),
+                            //       end: Color(0xff0099cc),
+                            //     ),
+                            //     bubblesColor: const BubblesColor(
+                            //       dotPrimaryColor: Colors.pink,
+                            //       dotSecondaryColor: Colors.white,
+                            //     ),
+                            //     likeBuilder: (bool isLiked) {
+                            //       return Icon(
+                            //         isLiked
+                            //             ? Icons.favorite
+                            //             : Icons.favorite_border,
+                            //         color: isLiked ? Colors.red : Colors.white,
+                            //         size: 28,
+                            //       );
+                            //     },
+
+                            //     onTap: (bool isLiked) async {
+                            //       _ctrl.likedMethod(
+                            //         templateID:
+                            //             _ctrl.singleTemplateData.value!.id,
+                            //         userID:
+                            //             UserService
+                            //                 .instance
+                            //                 .userModel
+                            //                 .value
+                            //                 .id!,
+                            //       );
+                            //       // Call API here
+                            //       // await _ctrl.likeUnlikeTemplate();
+
+                            //       // Return the NEW state
+
+                            //       return !isLiked;
+                            //     },
+                            //   ),
+                            // ),
+                            const SizedBox(height: 5),
+                            MyText(
+                              text:
+                                  "${_ctrl.singleTemplateData.value?.stats.totalLikes}",
+                              size: 17,
+                              weight: FontWeight.w700,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 5),
-                        MyText(text: "1.5k", size: 17, weight: FontWeight.w700),
                         const SizedBox(height: 20),
-                        CommonImageView(svgPath: Assets.imagesShareIconS),
-                        const SizedBox(height: 5),
-                        MyText(text: "44", size: 17, weight: FontWeight.w700),
+                        Column(
+                          children: [
+                            CommonImageView(svgPath: Assets.imagesShareIconS),
+                            const SizedBox(height: 5),
+                            MyText(
+                              text:
+                                  "${_ctrl.singleTemplateData.value?.stats.totalShares}",
+                              size: 17,
+                              weight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

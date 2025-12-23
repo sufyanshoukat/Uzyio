@@ -508,7 +508,10 @@ class _TemplateCardState extends State<TemplateCard>
                   if (widget.isProCard == true)
                     Align(alignment: Alignment.topRight, child: ProCard())
                   else
-                    const SizedBox.shrink(),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: ProCard(title: "Free"),
+                    ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -889,29 +892,29 @@ class _TemplateCardWithScrollControllerState
 //   }
 // }
 
-// Placeholder for ProCard widget
-class ProCard extends StatelessWidget {
-  const ProCard({super.key});
+// // Placeholder for ProCard widget
+// class ProCard extends StatelessWidget {
+//   const ProCard({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.amber,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: const Text(
-        'PRO',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//       decoration: BoxDecoration(
+//         color: Colors.amber,
+//         borderRadius: BorderRadius.circular(4),
+//       ),
+//       child: const Text(
+//         'PRO',
+//         style: TextStyle(
+//           color: Colors.black,
+//           fontSize: 10,
+//           fontWeight: FontWeight.bold,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class AiVideoCard extends StatelessWidget {
   final String aiImage, title;

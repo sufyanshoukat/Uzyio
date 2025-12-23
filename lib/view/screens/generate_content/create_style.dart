@@ -34,6 +34,7 @@ class _CreateStylePageState extends State<CreateStylePage> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
+        _ctrl.pickedImageFile.value = null;
         Get.close(2);
       },
       child: Container(
@@ -44,6 +45,7 @@ class _CreateStylePageState extends State<CreateStylePage> {
             appBar: GeneralAppBar2(
               title: "Create Style",
               onBackTap: () {
+                _ctrl.pickedImageFile.value = null;
                 Get.close(2);
               },
             ),
@@ -147,6 +149,7 @@ class _CreateStylePageState extends State<CreateStylePage> {
                   Align(
                     alignment: Alignment.center,
                     child: MyText(
+                      paddingBottom: 20,
                       text: "50 Coins",
                       size: 16,
                       weight: FontWeight.w500,

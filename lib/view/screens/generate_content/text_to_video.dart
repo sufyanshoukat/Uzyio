@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:uzyio/constants/app_colors.dart';
 import 'package:uzyio/constants/app_images.dart';
 import 'package:uzyio/constants/app_sizes.dart';
 import 'package:uzyio/constants/app_styling.dart';
-import 'package:uzyio/view/screens/generate_content/generated_style.dart';
+import 'package:uzyio/controller/categories_controller/categories_controller.dart';
+import 'package:uzyio/view/screens/generate_content/template_generated_style.dart';
+import 'package:uzyio/view/screens/generate_content/image_generation_result.dart';
 import 'package:uzyio/view/widget/custom_textfield.dart';
 import 'package:uzyio/view/widget/general_appbar.dart';
 import 'package:uzyio/view/widget/my_button.dart';
@@ -19,13 +22,20 @@ class TextToVideoPage extends StatefulWidget {
 }
 
 class _TextToVideoPageState extends State<TextToVideoPage> {
+  final ctrl = Get.find<CategoriesController>();
+  @override
+  void dispose() {
+    ctrl.textToImageController.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: AppStyling().background(image: Assets.imagesBkImageSimple),
       child: Scaffold(
         backgroundColor: kTransperentColor,
-        appBar: GeneralAppBar2(title: "Create Style"),
+        appBar: GeneralAppBar2(isBackButton: false, title: "Create Style"),
         body: Padding(
           padding: AppSizes.DEFAULT,
           child: Column(
@@ -49,6 +59,7 @@ class _TextToVideoPageState extends State<TextToVideoPage> {
               ),
 
               CustomTextField(
+                controller: ctrl.textToImageController,
                 focusedBorderColor: kSecondaryColor,
                 outlineBorderColor: kTransperentColor,
                 backgroundColor: Color(0xff2C2C2C),
@@ -65,7 +76,8 @@ class _TextToVideoPageState extends State<TextToVideoPage> {
                 mTop: 32,
                 mBottom: 18,
                 onTap: () {
-                  Get.to(() => GeneratedStylePageDummyPage());
+                  ctrl.getTextToVideo(promt: ctrl.textToImageController.text);
+                  // Get.to(() => GeneratedImagePage());
                 },
                 isGradientBackground: true,
                 buttonText: "Generate Video",

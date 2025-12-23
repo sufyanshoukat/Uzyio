@@ -34,7 +34,8 @@ class ProBtn extends StatelessWidget {
 }
 
 class ProCard extends StatelessWidget {
-  const ProCard({super.key});
+  String title;
+  ProCard({super.key, this.title = 'Pro'});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class ProCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [MyText(text: "Pro", size: 11, weight: FontWeight.w600)],
+        children: [MyText(text: title, size: 11, weight: FontWeight.w600)],
       ),
     );
   }

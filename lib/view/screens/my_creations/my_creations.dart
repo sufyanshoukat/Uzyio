@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uzyio/constants/app_colors.dart';
@@ -57,11 +59,12 @@ class _MyCreationPageState extends State<MyCreationPage> {
                           isVideo: true,
                           height: 260,
                           width: Get.width,
-                          URL: model.file.toString(),
+                          URL: "${model.file}",
 
                           // profileName: "${model.title}",
                           // isProCard:
                           onTap: () async {
+                            log("${model.file}");
                             // await _ctrl.getSingleTemplate(
                             //   templateID:
                             //       "${_ctrl.getSeeAllTempleteCategoryModel.value!.categories!.templates[index].id}",
@@ -86,7 +89,7 @@ class _MyCreationPageState extends State<MyCreationPage> {
                   ? Center(child: WaveLoading(size: 40))
                   : Center(
                     child: MyText(
-                      text: "No Categories Avalible!",
+                      text: "My Creation Not Found!",
                       color: kWhiteColor,
                     ),
                   ),
