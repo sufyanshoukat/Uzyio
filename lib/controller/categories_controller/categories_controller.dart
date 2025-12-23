@@ -338,6 +338,7 @@ class CategoriesController extends GetxController {
     required String endPoint,
     required String image,
     required String prompt,
+    required String templateID,
   }) async {
     try {
       showVideoGenerationLoadingDialog();
@@ -348,6 +349,7 @@ class CategoriesController extends GetxController {
       // Add form fields
       request.fields['endpoint'] = endPoint;
       request.fields['prompt'] = prompt;
+      request.fields['template_id'] = templateID;
 
       // Add image file with proper content type
       if (image.isNotEmpty) {

@@ -13,6 +13,7 @@ import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/screens/home/display_content.dart';
 import 'package:uzyio/view/screens/home/see_all_ai_photo.dart';
 import 'package:uzyio/view/screens/my_creations/my_creations.dart';
+import 'package:uzyio/view/screens/payment/payment_home.dart';
 import 'package:uzyio/view/screens/settings/my_profile.dart';
 import 'package:uzyio/view/screens/settings/refer.dart';
 import 'package:uzyio/view/screens/settings/setting.dart';
@@ -426,15 +427,14 @@ class _HomepageState extends State<Homepage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, top: 30),
-                child: FadeSlideTransition(
-                  delay: 300,
-                  beginOffset: Offset(-0.5, 0),
-                  child: MySearchBar(),
-                ),
-              ),
-
+              // Padding(
+              //   padding: EdgeInsets.only(left: 20, right: 20, top: 30),
+              //   child: FadeSlideTransition(
+              //     delay: 300,
+              //     beginOffset: Offset(-0.5, 0),
+              //     child: MySearchBar(),
+              //   ),
+              // ),
               SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 padding: EdgeInsets.only(top: 20),
@@ -483,6 +483,10 @@ class _HomepageState extends State<Homepage> {
                                 Get.to(() => ReferPage());
                                 break;
                               case 4:
+                                Get.to(
+                                  () => PaymentHomePage(),
+                                  binding: paymentBindings(),
+                                );
                                 break;
                               // case 5:
                               //   Get.to(() => Settings(), binding: AuthBindings());

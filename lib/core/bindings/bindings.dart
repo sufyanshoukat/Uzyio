@@ -5,6 +5,7 @@ import 'package:uzyio/controller/chat/chat_controller.dart';
 import 'package:uzyio/controller/faqs_controller/faqs_controller.dart';
 import 'package:uzyio/controller/feed_controller/feed_controller.dart';
 import 'package:uzyio/controller/my_creation/my_creation_controller.dart';
+import 'package:uzyio/controller/payment_controller/payment_controller.dart';
 import 'package:uzyio/controller/reward_controller.dart/reward_contoller.dart';
 import 'package:uzyio/controller/video_controller/video_controller.dart';
 
@@ -61,5 +62,12 @@ class chatBindings implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => ChatController());
+  }
+}
+
+class paymentBindings implements Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => PaymentController());
   }
 }

@@ -109,7 +109,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         MyText(
                           paddingLeft: 5,
-                          text: "$coins coins",
+                          text: "$coins Credits",
                           size: 14,
                           weight: FontWeight.w500,
                           color:

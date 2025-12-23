@@ -42,13 +42,13 @@ class _TextToVideoPageState extends State<TextToVideoPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Spacer(),
-              MyButton(
-                onTap: () {},
-                isGradientBackground: false,
-                buttonText: "Change Image To Animated",
-                backgroundColor: kWhiteColor,
-                fontColor: kBlackColor,
-              ),
+              // MyButton(
+              //   onTap: () {},
+              //   isGradientBackground: false,
+              //   buttonText: "Change Image To Animated",
+              //   backgroundColor: kWhiteColor,
+              //   fontColor: kBlackColor,
+              // ),
               Spacer(),
 
               MyText(

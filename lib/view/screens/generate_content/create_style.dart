@@ -11,6 +11,7 @@ import 'package:uzyio/constants/app_styling.dart';
 import 'package:uzyio/constants/loading_animation.dart';
 import 'package:uzyio/controller/categories_controller/categories_controller.dart';
 import 'package:uzyio/core/common/global_instance.dart';
+import 'package:uzyio/services/user/user_services.dart';
 import 'package:uzyio/view/widget/common_image_view_widget.dart';
 import 'package:uzyio/view/widget/custom_dialog_widget.dart';
 import 'package:uzyio/view/widget/custom_textfield.dart';
@@ -20,7 +21,14 @@ import 'package:uzyio/view/widget/my_text_widget.dart';
 
 class CreateStylePage extends StatefulWidget {
   String endPoint;
-  CreateStylePage({super.key, required this.endPoint});
+  String credits;
+  String templateID;
+  CreateStylePage({
+    super.key,
+    required this.endPoint,
+    required this.credits,
+    required this.templateID,
+  });
 
   @override
   State<CreateStylePage> createState() => _CreateStylePageState();
@@ -125,7 +133,7 @@ class _CreateStylePageState extends State<CreateStylePage> {
                   MyButton(
                     mTop: 32,
                     mBottom: 18,
-                    onTap: () {
+                    onTap: () async {
                       if (_ctrl.pickedImageFile.value == null) {
                         displayToast(msg: "Please pick an image");
                         return;
@@ -136,11 +144,14 @@ class _CreateStylePageState extends State<CreateStylePage> {
                       log("✅ Image: ${_ctrl.pickedImageFile.value}");
                       log("✅ Prompt: ${_ctrl.promtController.text}");
 
-                      _ctrl.createVideo(
+                      await _ctrl.createVideo(
                         endPoint: _ctrl.endPoint.value!,
                         image: _ctrl.pickedImageFile.value!,
                         prompt: _ctrl.promtController.text,
+                        templateID: widget.templateID,
                       );
+
+                      await UserService.instance.getUserInformation();
                     },
                     isGradientBackground: true,
                     buttonText: "Generate",
@@ -150,7 +161,7 @@ class _CreateStylePageState extends State<CreateStylePage> {
                     alignment: Alignment.center,
                     child: MyText(
                       paddingBottom: 20,
-                      text: "50 Coins",
+                      text: "Credits ${widget.credits} required.",
                       size: 16,
                       weight: FontWeight.w500,
                     ),

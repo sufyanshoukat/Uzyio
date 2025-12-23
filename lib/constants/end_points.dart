@@ -80,3 +80,15 @@ String dailyRewardsAPI({required String id}) {
 
 // REWARD COINS DETAIL / REWARD SETTING
 String isLikeAPI = "${baseUrl}api/user/likes";
+
+// -----------------------------------------------
+// -------------- Subscription -------------------
+
+String subScriptionCategoryApi =
+    "${baseUrl}api/subscription-plan-categories?type=mobile";
+
+String subScriptionPlansApi({required String scID}) {
+  return "${baseUrl}api/subscription-plans?plan_category_id=$scID";
+}
+
+String subscribePlanAPI = "${baseUrl}api/user/subscriptions";

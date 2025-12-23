@@ -18,7 +18,7 @@ class SingleTemplateModel {
 class TemplateData {
   final String id;
   final String title;
-  final int coins;
+  final int credits;
   final bool isPremium;
   final String apiEndpoint;
   final String prompt;
@@ -33,7 +33,7 @@ class TemplateData {
   TemplateData({
     required this.id,
     required this.title,
-    required this.coins,
+    required this.credits,
     required this.isPremium,
     required this.apiEndpoint,
     required this.prompt,
@@ -50,7 +50,7 @@ class TemplateData {
     return TemplateData(
       id: json.containsKey('id') ? json['id'] ?? '' : '',
       title: json.containsKey('title') ? json['title'] ?? '' : '',
-      coins: json.containsKey('conis') ? (json['conis'] ?? 0) : 0,
+      credits: json.containsKey('credits') ? (json['credits'] ?? 0) : 0,
       isPremium:
           json.containsKey('is_premium') ? json['is_premium'] ?? false : false,
       apiEndpoint:
@@ -81,7 +81,7 @@ class TemplateData {
     return TemplateData(
       id: '',
       title: '',
-      coins: 0,
+      credits: 0,
       isPremium: false,
       apiEndpoint: '',
       prompt: '',

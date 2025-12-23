@@ -6,7 +6,7 @@ import 'package:uzyio/view/widget/my_text_widget.dart';
 // ignore: must_be_immutable
 class MyButton extends StatelessWidget {
   MyButton({
-    required this.onTap,
+    this.onTap,
     required this.buttonText,
     this.height = 65,
     this.backgroundColor = kSecondaryColor,
@@ -25,7 +25,7 @@ class MyButton extends StatelessWidget {
   });
 
   final String buttonText;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final double? height;
   final double radius;
   final double fontSize;

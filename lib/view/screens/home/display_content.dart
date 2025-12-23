@@ -521,6 +521,18 @@ class _DisplayContentPageState extends State<DisplayContentPage> {
 
                           Get.to(
                             () => CreateStylePage(
+                              templateID:
+                                  _ctrl.singleTemplateData.value != null
+                                      ? _ctrl.singleTemplateData.value!.id
+                                          .toString()
+                                      : '1234',
+                              credits:
+                                  _ctrl.singleTemplateData.value?.credits !=
+                                          null
+                                      ? _ctrl.singleTemplateData.value!.credits
+                                          .toString()
+                                      : '',
+
                               endPoint:
                                   "${_ctrl.singleTemplateData.value?.apiEndpoint}",
                             ),
